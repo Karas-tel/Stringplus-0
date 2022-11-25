@@ -60,5 +60,15 @@ int my_dtoe( long double* val, int zero_flag);
 int check_inf_nan(long double val, _string* data, flags* flags, char specifier);
 void check_flags(long double val, flags* flags);
 void update_acc(long double val, flags* flags, char specifier, char e_or_f , int zero_flag);
+void sprint_o (flags* flags, int* counter, int flag_zero, char** str, _string* data);
+void sprint_x (flags* flags, int* counter, int flag_zero, char** str, _string* data, char specifier);
+void sprint_s(flags* flags, int *counter, char **str, va_list param);
+void supp_d(flags* flags, va_list param, char** str, int* counter);
+void supp_f(flags* flags, va_list param, char** str, int* counter);
+void supp_e(flags* flags, va_list param, char** str, int* counter, const char* format);
+void supp_g(flags* flags, va_list param, char** str, int* counter, const char* format);
+void supp_o(flags* flags, va_list param, char** str, int* counter);
+void supp_x(flags* flags, va_list param, char** str, int* counter, const char* format);
 
+void supp_p(flags* flags, va_list param, char** str, int* counter, const char* format);
 #endif /* s21_sprintf_h */

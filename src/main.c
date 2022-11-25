@@ -89,7 +89,7 @@ START_TEST(test_printf_d) {
     ck_assert_int_eq(f, s);
     ck_assert_str_eq(buff, buff2);
     f = s21_sprintf(buff2, "blblbblblc%c%+-010d", '$', 10);
-    s = sprintf(buff, "blblbblblc%c%+-010d", '$', 10);
+    s = sprintf(buff, "blblbblblc%c%+-10d", '$', 10);
     ck_assert_int_eq(f, s);
     ck_assert_str_eq(buff, buff2);
     f = s21_sprintf(buff2, "blblbblblc%c%+010d%5d%+5d", '$', 10, 0, -1);
@@ -151,6 +151,38 @@ START_TEST(test_printf_e) {
     ck_assert_str_eq(buff, buff2);
 } END_TEST
 
+START_TEST(test_printf_o) {
+    char buff[100];
+    char buff2[100];
+
+    int f1 = s21_sprintf(buff2, "%o %5o %-20lo %10.20lo %#10.20lo %-#20.10lo", 21341324, 0, (long)1234341, (long) 123423141, (long)1234123, (long)1234341);
+    int s1 = sprintf(buff, "%o %5o %-20lo %10.20lo %#10.20lo %-#20.10lo", 21341324, 0, (long)1234341, (long) 123423141, (long)1234123, (long)1234341);
+    ck_assert_int_eq(f1, s1);
+    ck_assert_str_eq(buff, buff2);
+} END_TEST
+
+START_TEST(test_printf_x) {
+    char buff[200];
+    char buff2[200];
+
+    int f1 = s21_sprintf(buff2, "%x %5x %-20lx %10.20lx %#10.20lx %-#20.10lx %#10.20lX %-#20.10lX", 21341324, 0, (long)1234341, (long) 123423141, (long)1234123, (long)1234341, (long)1234123, (long)1234341);
+    int s1 = sprintf(buff, "%x %5x %-20lx %10.20lx %#10.20lx %-#20.10lx %#10.20lX %-#20.10lX", 21341324, 0, (long)1234341, (long) 123423141, (long)1234123, (long)1234341, (long)1234123, (long)1234341);
+    ck_assert_int_eq(f1, s1);
+    ck_assert_str_eq(buff, buff2);
+} END_TEST
+
+START_TEST(test_printf_p_n) {
+    char buff[200];
+    char buff2[200];
+    int val1 = 10;
+    int val2, val3;
+    int f1 = s21_sprintf(buff2,"%-20p %n", &val1, &val2);
+    int s1 = sprintf(buff, "%-20p %n", &val1, &val3);
+    ck_assert_int_eq(f1, s1);
+    ck_assert_int_eq(val2, val3);
+    ck_assert_str_eq(buff, buff2);
+} END_TEST
+
 
 
 Suite* sprintf_suite(void) {
@@ -164,14 +196,20 @@ Suite* sprintf_suite(void) {
     suite_add_tcase(s, tc_core);
     tcase_add_test(tc_core, test_printf_e);
     suite_add_tcase(s, tc_core);
-//    tcase_add_test(tc_core, s21_chars_f);
-//    suite_add_tcase(s, tc_core);
+    tcase_add_test(tc_core, s21_chars_f);
+    suite_add_tcase(s, tc_core);
     tcase_add_test(tc_core, s21_nums_f);
     suite_add_tcase(s, tc_core);
     tcase_add_test(tc_core, s21_nums2_f);
     suite_add_tcase(s, tc_core);
-//    tcase_add_test(tc_core, s21_nums3_f);
-//    suite_add_tcase(s, tc_core);
+    tcase_add_test(tc_core, test_printf_o);
+    suite_add_tcase(s, tc_core);
+    tcase_add_test(tc_core, test_printf_x);
+    suite_add_tcase(s, tc_core);
+    tcase_add_test(tc_core, test_printf_p_n);
+    suite_add_tcase(s, tc_core);
+    tcase_add_test(tc_core, s21_nums3_f);
+    suite_add_tcase(s, tc_core);
     return s;
 }
 
@@ -181,28 +219,16 @@ int main() {
 //    while (g >= 10)
 //        g /= 10;
 //    printf("g = %d\n", g);
-    char buff[100];
-    char buff2[100] = {0};
+    char buff[200];
+    char buff2[200];
     //double d = 5.0;
-   // long int d = 10;
-    int f = s21_sprintf(buff2,  "%#.0lg %lG %#lg %lg", 234243.234, 8427348.234, 123.0, 155.2);
-    int ss = sprintf(buff, "%-10.20o", 1231234);
+    int d = 10;
+    int e;
+    int f = s21_sprintf(buff2,  "%lc %lc %lc",1, 130, 200);
+    int ss = sprintf(buff, "%lc %lc %lc",'1', 130, 200);
     printf("%s- %d\n", buff,ss);
     printf("%s- %d\n", buff2,f);
-    long long val = 1231234;
-    long long* ptr = &val;
-    _string temp;
-    _string_init(&temp);
-    long long val2 =(long long) ptr;
-    my_itoa(val2, &temp, 16);
-    printf("1 = %20p, 2 = %s\n", ptr, temp.buffer);
-
-    _string_init(&temp);
-    
-    
-    my_itoa(val, &temp, 8);
-    printf("%s\n", temp.buffer);
-    
+   
 
 //    long double temp = 100e-99;
 //    int counter = 0, flag_plus = 0;

@@ -13,7 +13,7 @@
 #ifdef INFINITY
 /* INFINITY is supported */
 #endif
-#define SIZE 128
+#define SIZE 1024
 
 int s21_sprintf(char* str, const char* format, ...) {
     int counter = 0;
@@ -26,7 +26,6 @@ int s21_sprintf(char* str, const char* format, ...) {
         if (*format != '%') {
             *(str++) = *(format++);
             ++counter;
-            
         } else {
             flag = 1;
             while (flag) {
@@ -44,106 +43,57 @@ int s21_sprintf(char* str, const char* format, ...) {
                     ++counter;
                     flag = 0;
                     ++format;
+                } else if (*(format) == 's') {
+                    sprint_s(&flags, &counter, &str, param);
+                    flag = 0;
+                    ++format;
                 } else if (*(format) == 'd' || *(format) == 'i' || *(format) == 'u') {
-                    long long val = 0;
-                    int flag_zero;     //=1 если val > 0, = 0 если val = 0, = -1 если val < 0
-                    if (flags.l)
-                        val = (long long) va_arg(param, long);
-                     else
-                        val = (long long) va_arg(param, int);
-                    if (val > 0)
-                        flag_zero = 1;
-                    else if (val == 0)
-                        flag_zero = 0;
-                    else
-                        flag_zero = -1;
-                    _string data;
-                    _string_init(&data);
-                    my_itoa(val, &data, 10);
-                    sprint_d(&flags, &counter, flag_zero, &str, &data);
-                    flag_init(&flags);
+                    supp_d(&flags, param, &str, &counter);
                     flag = 0;
                     ++format;
-                    free(data.buffer);
-                    //print_d(&flags, &ptr, &counter);
                 } else if (*(format) == 'f') {
-                    long double val = 0;
-                    int flag_zero = 0;
-                    if (flags.L)
-                        val = va_arg(param, long double);
-                    else
-                        val = (long double) va_arg(param, double);
-                    _string data;
-                    _string_init(&data);
-                    my_dtos(val, &data, &flags, 'f');
-                    if (val > 0)
-                        flag_zero = 1;
-                    else if (val == 0.0)
-                        flag_zero = 0;
-                    else if (val < 0.0) {
-                        flag_zero = -1;
-                       // printf ("%Lf\n", val);
-                    }
-                    check_flags(val, &flags);
-                    sprint_f(&flags, &counter, flag_zero, &str, &data);
-                    flag_init(&flags);
+                    supp_f(&flags, param, &str, &counter);
                     flag = 0;
                     ++format;
-                    free(data.buffer);
                 } else if (*(format) == 'e' || *(format) == 'E') {
-                    long double val = 0;
-                    char specifier = *(format);
-                    int flag_zero = 0;
-                    if (flags.L)
-                        val = va_arg(param, long double);
-                    else
-                        val = (long double) va_arg(param, double);
-                    _string data;
-                    _string_init(&data);
-                    if (val > 0)
-                        flag_zero = 1;
-                    else if (val == 0.0)
-                        flag_zero = 0;
-                    else if (val < 0.0) {
-                        flag_zero = -1;
-                    }
-                    check_flags(val, &flags);
-                    sprint_e(&flags, &counter, &str, &data, val, flag_zero, specifier);
-                    flag_init(&flags);
+                    supp_e(&flags, param, &str, &counter, format);
                     flag = 0;
                     ++format;
-                    free(data.buffer);
                 } else if (*(format) == 'g' || *(format) == 'G') {
-                    long double val = 0;
-                    char specifier = *(format);
-                    if (specifier == 'g')
-                        specifier = 'e';
-                    else
-                        specifier = 'E';
-                    int flag_zero = 0;
-                    if (flags.L)
-                        val = va_arg(param, long double);
-                    else
-                        val = (long double) va_arg(param, double);
-                    _string data;
-                    _string_init(&data);
-                    if (val > 0)
-                        flag_zero = 1;
-                    else if (val == 0.0)
-                        flag_zero = 0;
-                    else if (val < 0.0) {
-                        flag_zero = -1;
-                    }
-                    check_flags(val, &flags);
-                    sprint_g(&flags, &counter, flag_zero, &str, &data, val, specifier);
-                    flag_init(&flags);
+                    supp_g(&flags, param, &str, &counter, format);
                     flag = 0;
                     ++format;
-                    free(data.buffer);
+                    
+                } else if (*(format) == 'o') {
+                    supp_o(&flags, param, &str, &counter);
+                    flag = 0;
+                    ++format;
+                    
+                } else if (*(format) == 'X' || *(format) == 'x') {
+                    supp_x(&flags, param, &str, &counter, format);
+                    flag = 0;
+                    ++format;
+                    
+                } else if (*(format) == 'p') {
+                    supp_p(&flags, param, &str, &counter, format);
+                    flag = 0;
+                    ++format;
+                    
+                } else if (*(format) == 'n') {
+                    int* ptr;
+                    ptr = va_arg(param, int*);
+                    *ptr = counter;
+                    ++format;
+                    flag = 0;
+                    flag_init(&flags);
+                } else if (*(format) == '%') {
+                    *(str++) = '%';
+                    ++counter;
+                    ++format;
+                    flag = 0;
+                    flag_init(&flags);
                 }
             }
-
-            
         }
     }
     va_end(param);
@@ -270,6 +220,84 @@ void sprint_g(flags* flags, int* counter, int flag_zero, char** str, _string* da
         sprint_e(flags, counter, str, data, val, flag_zero, specifier);
     }
     
+}
+
+void sprint_o (flags* flags, int* counter, int flag_zero, char** str, _string* data) {
+    flags->sign = 0;
+    flags->zero = 0;
+    flags->space = 0;
+    if (flags->acc < 0 && flags->dot) flags->acc = 0;
+    if (flags->hash) {
+        shuffle_str(data);
+        data->buffer[data->pos++] = '0';
+        shuffle_str(data);
+    }
+    apply_acc_d(flags, data, flag_zero);
+    if (data->pos < flags->width) apply_width_d(flags, data, flag_zero, 0);
+
+for (int i = 0; i < data->pos; ++i) {
+    *((*str)++) = data->buffer[i];
+    ++(*counter);
+}
+    
+}
+
+void sprint_x (flags* flags, int* counter, int flag_zero, char** str, _string* data, char specifier) {
+    flags->sign = 0;
+    flags->zero = 0;
+    flags->space = 0;
+    if (flags->acc < 0 && flags->dot) flags->acc = 0;
+  
+    apply_acc_d(flags, data, flag_zero);
+    if (flags->hash || specifier == 'p') {
+        shuffle_str(data);
+        if (specifier == 'x' || specifier == 'X' || specifier == 'p')
+            data->buffer[data->pos++] = 'x';
+        data->buffer[data->pos++] = '0';
+        if (specifier == 'X') {
+            for (int i = 0; i < data->pos; ++i) {
+                if (data->buffer[i] >= 'a' && data->buffer[i] <= 'z')
+                    data->buffer[i] -= 32;
+            }
+        }
+        shuffle_str(data);
+    }
+    if (data->pos < flags->width) apply_width_d(flags, data, flag_zero, 0);
+
+for (int i = 0; i < data->pos; ++i) {
+    *((*str)++) = data->buffer[i];
+    ++(*counter);
+}
+}
+
+void sprint_s(flags* flags, int *counter, char **str, va_list param) {
+    char* data = va_arg(param, char*);
+    _string tmp;
+    _string_init(&tmp);
+    int i = 0;
+    while (*data != '\0') {
+        tmp.buffer[tmp.pos++] = *(data++);
+    }
+    if (!flags->align) {
+        shuffle_str(&tmp);
+    }
+    for (; tmp.pos < flags->width; )
+        tmp.buffer[tmp.pos++] = ' ';
+    if (!flags->align) {
+        shuffle_str(&tmp);
+    }
+//    while (temp != '\0') {
+//        temp = va_arg(param, int);
+//        data[qua++] = (char)temp;
+//        printf("%c ", data[qua - 1]);
+//    }
+   
+    while (tmp.buffer[i] != '\0') {
+        *((*str)++) = tmp.buffer[i++];
+        ++(*counter);
+    }
+    
+    free(tmp.buffer);
 }
 
 void shuffle_str (_string* data) {
@@ -412,7 +440,9 @@ void my_dtos(long double val, _string* data, flags* flags, char specifier) {
         }
         my_itoa((long long) int_part, data, 10);
         shuffle_str(data);
-        if (flags->sign && val >= 0)
+        if (1 / val == -INFINITY) {
+            data->buffer[data->pos++] = '-';
+        } else if (flags->sign && val >= 0)
             data->buffer[data->pos++] = '+';
         else if (flags->space && val >= 0)
             data->buffer[data->pos++] = ' ';
@@ -462,7 +492,10 @@ int check_inf_nan(long double val, _string* data, flags* flags, char specifier) 
         data->buffer[data->pos++] = 'I';
         data->buffer[data->pos++] = 'N';
         data->buffer[data->pos++] = 'F';
-    } else {
+    } /*else if (val == 0 && 1 / val == -INFINITY) {
+        data->buffer[data->pos++] = '-';
+        data->buffer[data->pos++] = '0';
+    } */else {
         result = 0;
     }
     return result;
@@ -521,4 +554,148 @@ void update_acc(long double val, flags* flags, char specifier, char e_or_f, int 
             --i;
         }
     }
+    free(temp.buffer);
+}
+
+
+void supp_d(flags* flags, va_list param, char** str, int* counter) {
+    long long val = 0;
+    int flag_zero;     //=1 если val > 0, = 0 если val = 0, = -1 если val < 0
+    if (flags->l)
+        val = (long long) va_arg(param, long);
+     else
+        val = (long long) va_arg(param, int);
+    if (val > 0)
+        flag_zero = 1;
+    else if (val == 0)
+        flag_zero = 0;
+    else
+        flag_zero = -1;
+    _string data;
+    _string_init(&data);
+    my_itoa(val, &data, 10);
+    sprint_d(flags, counter, flag_zero, str, &data);
+    flag_init(flags);
+    free(data.buffer);
+}
+void supp_f(flags* flags, va_list param, char** str, int* counter) {
+    long double val = 0;
+    int flag_zero = 0;
+    if (flags->L)
+        val = va_arg(param, long double);
+    else
+        val = (long double) va_arg(param, double);
+    _string data;
+    _string_init(&data);
+    my_dtos(val, &data, flags, 'f');
+    if (val > 0)
+        flag_zero = 1;
+    else if (val == 0.0 && 1 / val != -INFINITY)
+        flag_zero = 0;
+    else
+        flag_zero = -1;
+    check_flags(val, flags);
+    sprint_f(flags, counter, flag_zero, str, &data);
+    flag_init(flags);
+    free(data.buffer);
+}
+
+void supp_e(flags* flags, va_list param, char** str, int* counter, const char* format) {
+    long double val = 0;
+    char specifier = *(format);
+    int flag_zero = 0;
+    if (flags->L)
+        val = va_arg(param, long double);
+    else
+        val = (long double) va_arg(param, double);
+    _string data;
+    _string_init(&data);
+    if (val > 0)
+        flag_zero = 1;
+    else if (val == 0.0)
+        flag_zero = 0;
+    else if (val < 0.0) {
+        flag_zero = -1;
+    }
+    check_flags(val, flags);
+    sprint_e(flags, counter, str, &data, val, flag_zero, specifier);
+    flag_init(flags);
+    free(data.buffer);
+}
+
+void supp_g(flags* flags, va_list param, char** str, int* counter, const char* format) {
+    long double val = 0;
+    char specifier = *(format);
+    if (specifier == 'g')
+        specifier = 'e';
+    else
+        specifier = 'E';
+    int flag_zero = 0;
+    if (flags->L)
+        val = va_arg(param, long double);
+    else
+        val = (long double) va_arg(param, double);
+    _string data;
+    _string_init(&data);
+    if (val > 0)
+        flag_zero = 1;
+    else if (val == 0.0)
+        flag_zero = 0;
+    else if (val < 0.0) {
+        flag_zero = -1;
+    }
+    check_flags(val, flags);
+    sprint_g(flags, counter, flag_zero, str, &data, val, specifier);
+    flag_init(flags);
+    free(data.buffer);
+}
+
+void supp_o(flags* flags, va_list param, char** str, int* counter) {
+    long long val = 0;
+    int flag_zero = 0;
+    val = va_arg(param, long long);
+    _string data;
+    _string_init(&data);
+    my_itoa(val, &data, 8);
+    if (val > 0)
+        flag_zero = 1;
+    else if (val == 0)
+        flag_zero = 0;
+    sprint_o(flags, counter, flag_zero, str, &data);
+    flag_init(flags);
+    free(data.buffer);
+}
+void supp_x(flags* flags, va_list param, char** str, int* counter, const char* format) {
+long long val = 0;
+int flag_zero = 0;
+char specifier = *(format);
+val = va_arg(param, long long);
+_string data;
+_string_init(&data);
+my_itoa(val, &data, 16);
+if (val > 0)
+    flag_zero = 1;
+else if (val == 0)
+    flag_zero = 0;
+sprint_x(flags, counter, flag_zero, str, &data, specifier);
+flag_init(flags);
+free(data.buffer);
+}
+
+void supp_p(flags* flags, va_list param, char** str, int* counter, const char* format) {
+    long long val = 0;
+    int flag_zero = 0;
+    char specifier = *(format);
+    val = va_arg(param, long long);
+    _string data;
+    _string_init(&data);
+    my_itoa(val, &data, 16);
+    if (val > 0)
+        flag_zero = 1;
+    else if (val == 0)
+        flag_zero = 0;
+    flags->acc = 0;
+    sprint_x(flags, counter, flag_zero, str, &data, specifier);
+    flag_init(flags);
+    free(data.buffer);
 }
