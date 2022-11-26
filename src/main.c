@@ -231,10 +231,14 @@ int main() {
 //    printf("%s- %d\n", buff2,f);
     
     char* str = "asdfADASSA5522 ASasdaspqp";
+    char* str1 = "99999999";
     char* str2 = to_lower(str);
-    free(str2);
-    printf("%s\n", str2);
+    char* str3 = insert(str, str1, 3);
+  
+    printf("%s\n", str3);
+    free(str3);
     
+    free(str2);
     
 
 //    long double temp = 100e-99;
