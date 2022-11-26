@@ -234,11 +234,14 @@ int main() {
     char* str1 = "99999999";
     char* str2 = to_lower(str);
     char* str3 = insert(str, str1, 3);
-  
+    printf("%s\n", str2);
+    free(str2);
+   
+
     printf("%s\n", str3);
     free(str3);
-    
-    free(str2);
+//
+   //free(str2);
     
 
 //    long double temp = 100e-99;
