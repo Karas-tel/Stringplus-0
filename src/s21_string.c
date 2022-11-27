@@ -72,5 +72,32 @@ void *insert(const char *src, const char *str, size_t start_index) {
 }
 
 void *trim(const char *src, const char *trim_chars) {
+
+        size_t left_bound = 0, right_bound = s21_strlen(src) - 1, flag = 1;
+        while(flag) {
+            flag = 0;
+            for(int i = 0; i < s21_strlen(trim_chars); ++i) {
+                if (src[left_bound] == trim_chars[i])
+                    flag = 1;
+            }
+            if (flag) left_bound++;
+        }
+        flag = 1;
+        while(flag) {
+            flag = 0;
+            for(int i = 0; i < s21_strlen(trim_chars); ++i) {
+                if (src[right_bound] == trim_chars[i])
+                    flag = 1;
+            }
+            if (flag) right_bound--;
+        }
     
+    char* str_cp = calloc(right_bound - left_bound + 2, sizeof(char));
+    int i_temp = 0;
+    if (str_cp) {
+        for (size_t i = left_bound; i <= right_bound; ++i)
+            str_cp[i_temp++] = src[i];
+        str_cp[i_temp]= '\0';
+    }
+    return str_cp;
 }
