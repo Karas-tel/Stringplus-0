@@ -310,6 +310,7 @@ void shuffle_str (_string* data) {
         *ptr--= *ptr1;
         *ptr1++ = tmp_char;
     }
+    
 }
 
 void my_itoa(long long value, _string* result, int base) {
