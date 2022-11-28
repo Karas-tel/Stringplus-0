@@ -219,15 +219,15 @@ int main() {
 //    while (g >= 10)
 //        g /= 10;
 //    printf("g = %d\n", g);
-    char buff[200];
-    char buff2[200];
+//    char buff[200];
+//    char buff2[200];
     //double d = 5.0;
 //    int d = 10;
 //    int e;
-    int f = s21_sprintf(buff2,  "%+.5d %+6.5d %+.5d %+6.5d %-2d %-2.5d %-4.d", 10, 10, -10, -10, 1, 10, 0);
-    int ss = sprintf(buff, "%+.5d %+6.5d %+.5d %+6.5d %-2d %-2.5d %-4.d", 10, 10, -10, -10, 1, 10, 0);
-    printf("%s- %d\n", buff,ss);
-    printf("%s- %d\n", buff2,f);
+//    int f = s21_sprintf(buff2,  "%+.5d %+6.5d %+.5d %+6.5d %-2d %-2.5d %-4.d", 10, 10, -10, -10, 1, 10, 0);
+//    int ss = sprintf(buff, "%+.5d %+6.5d %+.5d %+6.5d %-2d %-2.5d %-4.d", 10, 10, -10, -10, 1, 10, 0);
+//    printf("%s- %d\n", buff,ss);
+//    printf("%s- %d\n", buff2,f);
     
 //    char* str = "     ''''asdfADASSA5522 ASasdaspqp112212''''";
 //    char* str1 = "99999999";
