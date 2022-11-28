@@ -1,15 +1,22 @@
 #CFLAGS=-Wall -Werror -Wextra
-CFLAGS=
+CFLAGS = -Wall -Werror -Wextra -std=c11
+
 all: test
 
-test: main.c func.c s21_sprintf.c
-	gcc -o test $(CFLAGS) main.c func.c s21_sprintf.c -lcheck -lm -lpthread
+test: main.c s21_string.a
+	gcc -o test $(CFLAGS) main.c s21_string.a -lcheck -lm -lpthread
 	
+s21_string.a: s21_sprintf.o s21_string.o
+	ar r s21_string.a s21_string.o s21_sprintf.o
 
-	
+s21_sprintf.o: s21_sprintf.c
+	gcc $(CFLAGS) -c s21_sprintf.c
+
+s21_string.o: s21_string.c
+	gcc $(CFLAGS) -c s21_string.c
 
 clean:
-	rm -rf *.o
+	rm -rf *.o *.a
 
 check:
 	cp ../../materials/linters/.clang-format ../../src/.clang-format

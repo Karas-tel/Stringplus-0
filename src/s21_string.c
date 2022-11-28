@@ -20,7 +20,7 @@
 
 void* to_upper(const char *str) {
     char* str_cp =(char*) calloc(BUFF_SIZE, sizeof(char));
-    int i = 0;
+    size_t i = 0;
     while (str[i] != '\0') {
         if (str[i] >= 'a' && str[i] <= 'z')
             str_cp[i] = str[i] - 32;
@@ -49,7 +49,7 @@ void* to_lower(const char *str) {
 
 void *insert(const char *src, const char *str, size_t start_index) {
     char* str_cp = (char*) calloc(BUFF_SIZE, sizeof(char));
-    int i = 0;
+    size_t i = 0;
     if (start_index > s21_strlen(src) || str_cp == NULL)
         return NULL;
     while (i < start_index) {
@@ -58,7 +58,7 @@ void *insert(const char *src, const char *str, size_t start_index) {
             str_cp = (char*) realloc(str_cp, 2 * sizeof(str_cp));
         ++i;
     }
-    int i_temp = i, j = 0;
+    size_t i_temp = i, j = 0;
     while (str[j] != '\0') {
         str_cp[i++] = str[j++];
         if (i + 10 >= sizeof(str_cp)) str_cp = (char*)realloc(str_cp, 2 * sizeof(str_cp));
@@ -76,7 +76,7 @@ void *trim(const char *src, const char *trim_chars) {
         size_t left_bound = 0, right_bound = s21_strlen(src) - 1, flag = 1;
         while(flag) {
             flag = 0;
-            for(int i = 0; i < s21_strlen(trim_chars); ++i) {
+            for(size_t i = 0; i < s21_strlen(trim_chars); ++i) {
                 if (src[left_bound] == trim_chars[i])
                     flag = 1;
             }
@@ -85,7 +85,7 @@ void *trim(const char *src, const char *trim_chars) {
         flag = 1;
         while(flag) {
             flag = 0;
-            for(int i = 0; i < s21_strlen(trim_chars); ++i) {
+            for(size_t i = 0; i < s21_strlen(trim_chars); ++i) {
                 if (src[right_bound] == trim_chars[i])
                     flag = 1;
             }

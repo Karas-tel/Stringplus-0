@@ -220,8 +220,8 @@ int main() {
 //    while (g >= 10)
 //        g /= 10;
 //    printf("g = %d\n", g);
-    char buff[200];
-    char buff2[200];
+//    char buff[200];
+//    char buff2[200];
     //double d = 5.0;
 //    int d = 10;
 //    int e;
