@@ -353,7 +353,7 @@ void read_flags (flags* flags, const char** format) {
 
 void apply_acc_d (flags* flags, _string* data, int zero_flag) {
     shuffle_str(data);
-    if (flags->zero &&(zero_flag < 0)) {
+    if ((zero_flag < 0)) {
         --data->pos;
     }
     for (; data->pos < flags->acc;)
@@ -362,7 +362,7 @@ void apply_acc_d (flags* flags, _string* data, int zero_flag) {
         data->buffer[data->pos++] = '+';
 //    if (flags->zero &&flags->sign &&flags->acc < 0 && zero_flag >= 0)
 //        data->buffer[data->pos++] = '+';
-    else if (flags->zero && zero_flag < 0)
+    else if (zero_flag < 0)
         data->buffer[data->pos++] = '-';
     else if (flags->space && zero_flag >= 0)
         data->buffer[data->pos++] = ' ';

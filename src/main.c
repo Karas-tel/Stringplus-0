@@ -97,18 +97,18 @@ START_TEST(test_printf_d) {
     s = sprintf(buff, "blblbblblc%c%+010d%5d%+5d", '$', 10, 0, -1);
     ck_assert_int_eq(f, s);
     ck_assert_str_eq(buff, buff2);
-    f = s21_sprintf(buff2, "blblbblblc%c%+02.5d", '$', 10);
-    s = sprintf(buff, "blblbblblc%c%+02.5d", '$', 10);
+    f = s21_sprintf(buff2, "blblbblblc%c%+2.5d", '$', 10);
+    s = sprintf(buff, "blblbblblc%c%+2.5d", '$', 10);
     ck_assert_int_eq(f, s);
     ck_assert_str_eq(buff, buff2);
-    f = s21_sprintf(buff2,  "%0+.5d %0+6.5d %0+.5d %0+6.5d %-2d %-2.5d %-4.d", 10, 10, -10, -10, 1, 10, 0);
-    s = sprintf(buff,  "%0+.5d %0+6.5d %0+.5d %0+6.5d %-2d %-2.5d %-4.d", 10, 10, -10, -10, 1, 10, 0);
+    f = s21_sprintf(buff2,"%+.5d %+6.5d %+.5d %+6.5d %-2d %-2.5d %-4.d", 10, 10, -10, -10, 1, 10, 0);
+    s = sprintf(buff,"%+.5d %+6.5d %+.5d %+6.5d %-2d %-2.5d %-4.d", 10, 10, -10, -10, 1, 10, 0);
     ck_assert_int_eq(f, s);
     ck_assert_str_eq(buff, buff2);
     ck_assert_int_eq(f, s);
     ck_assert_str_eq(buff, buff2);
-    f = s21_sprintf(buff2, "blblbblblc%c%+0*.*d", '$', 2, 5, 10);
-    s = sprintf(buff, "blblbblblc%c%+0*.*d", '$', 2, 5, 10);
+    f = s21_sprintf(buff2, "blblbblblc%c%+*.*d", '$', 2, 5, 10);
+    s = sprintf(buff, "blblbblblc%c%+*.*d", '$', 2, 5, 10);
 } END_TEST
 
 START_TEST(test_printf_f) {
@@ -220,15 +220,15 @@ int main() {
 //    while (g >= 10)
 //        g /= 10;
 //    printf("g = %d\n", g);
-//    char buff[200];
-//    char buff2[200];
+    char buff[200];
+    char buff2[200];
     //double d = 5.0;
 //    int d = 10;
 //    int e;
-//    int f = s21_sprintf(buff2,  "%lc %lc %lc",1, 130, 200);
-//    int ss = sprintf(buff, "%lc %lc %lc",'1', 130, 200);
-//    printf("%s- %d\n", buff,ss);
-//    printf("%s- %d\n", buff2,f);
+    int f = s21_sprintf(buff2,  "%+.5d %+6.5d %+.5d %+6.5d %-2d %-2.5d %-4.d", 10, 10, -10, -10, 1, 10, 0);
+    int ss = sprintf(buff, "%+.5d %+6.5d %+.5d %+6.5d %-2d %-2.5d %-4.d", 10, 10, -10, -10, 1, 10, 0);
+    printf("%s- %d\n", buff,ss);
+    printf("%s- %d\n", buff2,f);
     
     char* str = "     ''''asdfADASSA5522 ASasdaspqp112212''''";
     char* str1 = "99999999";
