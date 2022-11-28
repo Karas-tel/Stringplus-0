@@ -76,14 +76,14 @@
 ////}
 ////END_TEST
 ////
-//START_TEST(test_printf_d) {
-//    char buff[100];
-//    char buff2[100];
-//
-//    int f = s21_sprintf(buff2, "blblbblblc%c%+4d", '$', 10000);
-//    int s = sprintf(buff, "blblbblblc%c%+4d", '$', 10000);
-//    ck_assert_int_eq(f, s);
-//    ck_assert_str_eq(buff, buff2);
+START_TEST(test_printf_d) {
+    char buff[100];
+    char buff2[100];
+
+    int f = s21_sprintf(buff2, "blblbblblc%c%+4d", '$', 10000);
+    int s = sprintf(buff, "blblbblblc%c%+4d", '$', 10000);
+    ck_assert_int_eq(f, s);
+    ck_assert_str_eq(buff, buff2);
 ////    f = s21_sprintf(buff2, "blblbblblc%c%+04d", '$', 10);
 ////    s = sprintf(buff, "blblbblblc%c%+04d", '$', 10);
 ////    ck_assert_int_eq(f, s);
@@ -108,7 +108,7 @@
 ////    ck_assert_str_eq(buff, buff2);
 ////    f = s21_sprintf(buff2, "blblbblblc%c%+*.*d", '$', 2, 5, 10);
 ////    s = sprintf(buff, "blblbblblc%c%+*.*d", '$', 2, 5, 10);
-//} END_TEST
+} END_TEST
 ////
 ////START_TEST(test_printf_f) {
 ////    char buff[100];
@@ -185,13 +185,13 @@
 //
 //
 //
-//Suite* sprintf_suite(void) {
-//    Suite* s;
-//    TCase* tc_core;
-//    s = suite_create("sprintf");
-//    tc_core = tcase_create("core");
-//    tcase_add_test(tc_core, test_printf_d);
-//    suite_add_tcase(s, tc_core);
+Suite* sprintf_suite(void) {
+    Suite* s;
+    TCase* tc_core;
+    s = suite_create("sprintf");
+    tc_core = tcase_create("core");
+    tcase_add_test(tc_core, test_printf_d);
+    suite_add_tcase(s, tc_core);
 ////    tcase_add_test(tc_core, test_printf_f);
 ////    suite_add_tcase(s, tc_core);
 ////    tcase_add_test(tc_core, test_printf_e);
@@ -210,8 +210,8 @@
 ////    suite_add_tcase(s, tc_core);
 ////    tcase_add_test(tc_core, s21_nums3_f);
 ////    suite_add_tcase(s, tc_core);
-//    return s;
-//}
+    return s;
+}
 
 int main() {
 //    //char ch = 'c';
@@ -281,18 +281,18 @@ int main() {
 //    printf("%d", (int)o);
 //    data1.pos = 6;
 //    shuffle_str(&data1);
-//    printf("%s\n" ,data1.buffer);
-//      int no_failed = 0;
-//      Suite *s;
-//      SRunner *runner;
-//
-//      s = sprintf_suite();
-//      runner = srunner_create(s);
-//
-//      srunner_run_all(runner, CK_NORMAL);
-//      no_failed = srunner_ntests_failed(runner);
-//      srunner_free(runner);
-//      return (no_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+   // printf("%s\n" ,data1.buffer);
+      int no_failed = 0;
+      Suite *s;
+      SRunner *runner;
+    
+      s = sprintf_suite();
+      runner = srunner_create(s);
+    srunner_set_fork_status(runner, CK_NOFORK);
+      srunner_run_all(runner, CK_NORMAL);
+      no_failed = srunner_ntests_failed(runner);
+      srunner_free(runner);
+      return 0;
 
     return 0;
 }
