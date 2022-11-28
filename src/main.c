@@ -230,19 +230,19 @@ int main() {
     printf("%s- %d\n", buff,ss);
     printf("%s- %d\n", buff2,f);
     
-    char* str = "     ''''asdfADASSA5522 ASasdaspqp112212''''";
-    char* str1 = "99999999";
-    char* str2 = to_lower(str);
-    char* str3 = insert(str, str1, 3);
-    printf("%s\n", str2);
-    free(str2);
-   
-
-    printf("%s\n", str3);
-    free(str3);
-    char* str4 = trim(str, " '2");
-    printf("%s\n", str4);
-    free(str4);
+//    char* str = "     ''''asdfADASSA5522 ASasdaspqp112212''''";
+//    char* str1 = "99999999";
+//    char* str2 = to_lower(str);
+//    char* str3 = insert(str, str1, 3);
+//    printf("%s\n", str2);
+//    free(str2);
+//   
+//
+//    printf("%s\n", str3);
+//    free(str3);
+//    char* str4 = trim(str, " '2");
+//    printf("%s\n", str4);
+//    free(str4);
     
 //
    //free(str2);
