@@ -27,7 +27,7 @@ void* to_upper(const char *str) {
         else
             str_cp[i] = str[i];
         ++i;
-        if (i + 10 >= sizeof(str_cp)) str_cp = realloc(str_cp, 2 * sizeof(str_cp));
+       // if (i + 10 >= sizeof(str_cp)) str_cp = realloc(str_cp, 2 * sizeof(str_cp));
     }
     str_cp[i] = '\0';
     return str_cp;
@@ -54,7 +54,7 @@ void *insert(const char *src, const char *str, size_t start_index) {
         return NULL;
     while (i < start_index) {
         str_cp[i] = src[i];
-        if (i + 10 >= sizeof(str_cp))
+       // if (i + 10 >= sizeof(str_cp))
             str_cp = (char*) realloc(str_cp, 2 * sizeof(str_cp));
         ++i;
     }
