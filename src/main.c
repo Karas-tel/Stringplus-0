@@ -135,8 +135,8 @@ START_TEST(test_printf_f) {
 } END_TEST
 
 START_TEST(test_printf_e) {
-    char buff[100];
-    char buff2[100];
+    char buff[200];
+    char buff2[200];
 
     int f1 = s21_sprintf(buff2, "%4.4e %-3.5e %07e %+-.e %+010e %+010e %+010e % 010e", 1000.0, -0.0000002, 0.0, 200e+100, -0.0/0.0, 1.0/0.0, -1.0/0.0, 1.0/0.0);
     int s1 = sprintf(buff, "%4.4e %-3.5e %07e %+-.e %+010e %+010e %+010e % 010e", 1000.0, -0.0000002, 0.0, 200e+100, -0.0/0.0, 1.0/0.0, -1.0/0.0, 1.0/0.0);
