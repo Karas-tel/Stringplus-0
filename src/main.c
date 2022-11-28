@@ -292,6 +292,10 @@ int main() {
       srunner_run_all(runner, CK_NORMAL);
       no_failed = srunner_ntests_failed(runner);
       srunner_free(runner);
+    if (no_failed == 0)
+        printf("TEST OK\n");
+    else
+        printf("SMTH GETS WRONG\n");
       return 0;
 
     return 0;
