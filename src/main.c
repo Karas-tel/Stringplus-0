@@ -282,7 +282,7 @@ int main() {
 //    data1.pos = 6;
 //    shuffle_str(&data1);
    // printf("%s\n" ,data1.buffer);
-      int no_failed = 0;
+     // int no_failed = 0;
       Suite *s;
       SRunner *runner;
     
