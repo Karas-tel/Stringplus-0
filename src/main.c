@@ -11,46 +11,46 @@
 #include "test_data.h"
 #include "s21_string.h"
 
-//START_TEST(s21_chars_f) {
-//    char s21_buffer[256] = {0};
-//    char buffer[256] = {0};
-//    s21_sprintf(s21_buffer, "%%%% %c %s %c%s %c %s %s %s %s %s", 'a', test1,
-//                '\n', test2, '-', test3, test4, test5, test6, test7);
-//    sprintf(buffer, "%%%% %c %s %c%s %c %s %s %s %s %s", 'a', test1, '\n',
-//            test2, '-', test3, test4, test5, test6, test7);
-//    ck_assert_str_eq(s21_buffer, buffer);
-//}
-//END_TEST
-//
-//START_TEST(s21_nums_f) {
-//    char s21_buffer[256] = {0};
-//    char buffer[256] = {0};
-//    s21_sprintf(s21_buffer,
-//                "%-2i %+5i % 4i %2i %4d %d %15d %-+15d %22u %5u %4u %3u", 101,
-//                -210, -0, '0', 101, -210, -0, '0', (unsigned int)101,
-//                (unsigned int)210, (unsigned int)-0, (unsigned int)'0');
-//    sprintf(buffer, "%-2i %+5i % 4i %2i %4d %d %15d %-+15d %22u %5u %4u %3u",
-//            101, -210, -0, '0', 101, -210, -0, '0', (unsigned int)101,
-//            (unsigned int)210, (unsigned int)-0, (unsigned int)'0');
-//    ck_assert_str_eq(s21_buffer, buffer);
-//}
-//END_TEST
-//
-//START_TEST(s21_nums2_f) {
-//    char s21_buffer[256] = {0};
-//    char buffer[256] = {0};
-//
-//    s21_sprintf(s21_buffer, "%- 5li %-5hi %12hu %-4lu %hi %li %hi %li",
-//                (long int)125123123123, (short int)160, (unsigned short)101,
-//                (unsigned long)210, (short int)0, (long int)0, (short int)-25,
-//                (long int)-51);
-//    sprintf(buffer, "%- 5li %-5hi %12hu %-4lu %hi %li %hi %li",
-//            (long int)125123123123, (short int)160, (unsigned short)101,
-//            (unsigned long)210, (short int)0, (long int)0, (short int)-25,
-//            (long int)-51);
-//    ck_assert_str_eq(s21_buffer, buffer);
-//}
-//END_TEST
+START_TEST(s21_chars_f) {
+   char s21_buffer[256] = {0};
+   char buffer[256] = {0};
+   s21_sprintf(s21_buffer, "%%%% %c %s %c%s %c %s %s %s %s %s", 'a', test1,
+               '\n', test2, '-', test3, test4, test5, test6, test7);
+   sprintf(buffer, "%%%% %c %s %c%s %c %s %s %s %s %s", 'a', test1, '\n',
+           test2, '-', test3, test4, test5, test6, test7);
+   ck_assert_str_eq(s21_buffer, buffer);
+}
+END_TEST
+
+START_TEST(s21_nums_f) {
+   char s21_buffer[256] = {0};
+   char buffer[256] = {0};
+   s21_sprintf(s21_buffer,
+               "%-2i %+5i % 4i %2i %4d %d %15d %-+15d %22u %5u %4u %3u", 101,
+               -210, -0, '0', 101, -210, -0, '0', (unsigned int)101,
+               (unsigned int)210, (unsigned int)-0, (unsigned int)'0');
+   sprintf(buffer, "%-2i %+5i % 4i %2i %4d %d %15d %-+15d %22u %5u %4u %3u",
+           101, -210, -0, '0', 101, -210, -0, '0', (unsigned int)101,
+           (unsigned int)210, (unsigned int)-0, (unsigned int)'0');
+   ck_assert_str_eq(s21_buffer, buffer);
+}
+END_TEST
+
+START_TEST(s21_nums2_f) {
+   char s21_buffer[256] = {0};
+   char buffer[256] = {0};
+
+   s21_sprintf(s21_buffer, "%- 5li %-5hi %12hu %-4lu %hi %li %hi %li",
+               (long int)125123123123, (short int)160, (unsigned short)101,
+               (unsigned long)210, (short int)0, (long int)0, (short int)-25,
+               (long int)-51);
+   sprintf(buffer, "%- 5li %-5hi %12hu %-4lu %hi %li %hi %li",
+           (long int)125123123123, (short int)160, (unsigned short)101,
+           (unsigned long)210, (short int)0, (long int)0, (short int)-25,
+           (long int)-51);
+   ck_assert_str_eq(s21_buffer, buffer);
+}
+END_TEST
 
 START_TEST(s21_nums3_f) {
     char s21_buffer[256] = {0};
@@ -137,14 +137,19 @@ START_TEST(test_printf_e) {
     char buff[200];
     char buff2[200];
 
-    int f1 = s21_sprintf(buff2, "%4.4e %-3.5e %07e %+-.e %+010e %+010e %+010e % 010e", 1000.0, -0.0000002, 0.0, 200e+100, -1.0/0.0, 1.0/0.0, 1.0/0.0, 1.0/0.0);
-    int s1 = sprintf(buff, "%4.4e %-3.5e %07e %+-.e %+010e %+010e %+010e % 010e", 1000.0, -0.0000002, 0.0, 200e+100, -1.0/0.0, 1.0/0.0, 1.0/0.0, 1.0/0.0);
+    int f1 = s21_sprintf(buff2, "%4.4e %-3.5e %07e %+-.e ", 1000.0, -0.0000002, 0.0, 200e+100);
+    int s1 = sprintf(buff, "%4.4e %-3.5e %07e %+-.e ", 1000.0, -0.0000002, 0.0, 200e+100);
     ck_assert_int_eq(f1, s1);
     ck_assert_str_eq(buff, buff2);
-    int f2 = s21_sprintf(buff2, "%4.4E %-3.5E %07E %+-.E %+010E %+010E %+010E % 010E", 1000.0, -0.0000002, 0.0, 200e+100, -1.0/0.0, 1.0/0.0, 1.0/0.0, 1.0/0.0);
-    int s2 = sprintf(buff, "%4.4E %-3.5E %07E %+-.E %+010E %+010E %+010E % 010E", 1000.0, -0.0000002, 0.0, 200e+100, -1.0/0.0, 1.0/0.0, 1.0/0.0, 1.0/0.0);
+    int f2 = s21_sprintf(buff2, "%4.4E %-3.5E %07E %+-.E", 1000.0, -0.0000002, 0.0, 200e+100);
+    int s2 = sprintf(buff, "%4.4E %-3.5E %07E %+-.E", 1000.0, -0.0000002, 0.0, 200e+100);
     ck_assert_int_eq(f2, s2);
     ck_assert_str_eq(buff, buff2);
+} END_TEST
+
+START_TEST(test_printf_g) {
+    char buff[200];
+    char buff2[200];
     int f3 = s21_sprintf(buff2, "%#.0lg %lG %#lg %lg", 234243.234, 8427348.234, 123.0, 155.2);
     int s3 = sprintf(buff, "%#.0lg %lG %#lg %lg", 234243.234, 8427348.234, 123.0, 155.2);
     ck_assert_int_eq(f3, s3);
@@ -191,17 +196,20 @@ Suite* sprintf_suite(void) {
     s = suite_create("sprintf");
     tc_core = tcase_create("core");
     tcase_add_test(tc_core, test_printf_d);
+   
     suite_add_tcase(s, tc_core);
     tcase_add_test(tc_core, test_printf_f);
     suite_add_tcase(s, tc_core);
     tcase_add_test(tc_core, test_printf_e);
     suite_add_tcase(s, tc_core);
-//    tcase_add_test(tc_core, s21_chars_f);
-//    suite_add_tcase(s, tc_core);
-//    tcase_add_test(tc_core, s21_nums_f);
-//    suite_add_tcase(s, tc_core);
-//    tcase_add_test(tc_core, s21_nums2_f);
-//    suite_add_tcase(s, tc_core);
+    tcase_add_test(tc_core, test_printf_g);
+    suite_add_tcase(s, tc_core);
+    tcase_add_test(tc_core, s21_chars_f);
+    suite_add_tcase(s, tc_core);
+    tcase_add_test(tc_core, s21_nums_f);
+    suite_add_tcase(s, tc_core);
+    tcase_add_test(tc_core, s21_nums2_f);
+    suite_add_tcase(s, tc_core);
     tcase_add_test(tc_core, test_printf_o);
     suite_add_tcase(s, tc_core);
     tcase_add_test(tc_core, test_printf_x);
