@@ -11,46 +11,46 @@
 #include "test_data.h"
 #include "s21_string.h"
 
-START_TEST(s21_chars_f) {
-    char s21_buffer[256] = {0};
-    char buffer[256] = {0};
-    s21_sprintf(s21_buffer, "%%%% %c %s %c%s %c %s %s %s %s %s", 'a', test1,
-                '\n', test2, '-', test3, test4, test5, test6, test7);
-    sprintf(buffer, "%%%% %c %s %c%s %c %s %s %s %s %s", 'a', test1, '\n',
-            test2, '-', test3, test4, test5, test6, test7);
-    ck_assert_str_eq(s21_buffer, buffer);
-}
-END_TEST
-
-START_TEST(s21_nums_f) {
-    char s21_buffer[256] = {0};
-    char buffer[256] = {0};
-    s21_sprintf(s21_buffer,
-                "%-2i %+5i % 4i %2i %4d %d %15d %-+15d %22u %5u %4u %3u", 101,
-                -210, -0, '0', 101, -210, -0, '0', (unsigned int)101,
-                (unsigned int)210, (unsigned int)-0, (unsigned int)'0');
-    sprintf(buffer, "%-2i %+5i % 4i %2i %4d %d %15d %-+15d %22u %5u %4u %3u",
-            101, -210, -0, '0', 101, -210, -0, '0', (unsigned int)101,
-            (unsigned int)210, (unsigned int)-0, (unsigned int)'0');
-    ck_assert_str_eq(s21_buffer, buffer);
-}
-END_TEST
-
-START_TEST(s21_nums2_f) {
-    char s21_buffer[256] = {0};
-    char buffer[256] = {0};
-
-    s21_sprintf(s21_buffer, "%- 5li %-5hi %12hu %-4lu %hi %li %hi %li",
-                (long int)125123123123, (short int)160, (unsigned short)101,
-                (unsigned long)210, (short int)0, (long int)0, (short int)-25,
-                (long int)-51);
-    sprintf(buffer, "%- 5li %-5hi %12hu %-4lu %hi %li %hi %li",
-            (long int)125123123123, (short int)160, (unsigned short)101,
-            (unsigned long)210, (short int)0, (long int)0, (short int)-25,
-            (long int)-51);
-    ck_assert_str_eq(s21_buffer, buffer);
-}
-END_TEST
+//START_TEST(s21_chars_f) {
+//    char s21_buffer[256] = {0};
+//    char buffer[256] = {0};
+//    s21_sprintf(s21_buffer, "%%%% %c %s %c%s %c %s %s %s %s %s", 'a', test1,
+//                '\n', test2, '-', test3, test4, test5, test6, test7);
+//    sprintf(buffer, "%%%% %c %s %c%s %c %s %s %s %s %s", 'a', test1, '\n',
+//            test2, '-', test3, test4, test5, test6, test7);
+//    ck_assert_str_eq(s21_buffer, buffer);
+//}
+//END_TEST
+//
+//START_TEST(s21_nums_f) {
+//    char s21_buffer[256] = {0};
+//    char buffer[256] = {0};
+//    s21_sprintf(s21_buffer,
+//                "%-2i %+5i % 4i %2i %4d %d %15d %-+15d %22u %5u %4u %3u", 101,
+//                -210, -0, '0', 101, -210, -0, '0', (unsigned int)101,
+//                (unsigned int)210, (unsigned int)-0, (unsigned int)'0');
+//    sprintf(buffer, "%-2i %+5i % 4i %2i %4d %d %15d %-+15d %22u %5u %4u %3u",
+//            101, -210, -0, '0', 101, -210, -0, '0', (unsigned int)101,
+//            (unsigned int)210, (unsigned int)-0, (unsigned int)'0');
+//    ck_assert_str_eq(s21_buffer, buffer);
+//}
+//END_TEST
+//
+//START_TEST(s21_nums2_f) {
+//    char s21_buffer[256] = {0};
+//    char buffer[256] = {0};
+//
+//    s21_sprintf(s21_buffer, "%- 5li %-5hi %12hu %-4lu %hi %li %hi %li",
+//                (long int)125123123123, (short int)160, (unsigned short)101,
+//                (unsigned long)210, (short int)0, (long int)0, (short int)-25,
+//                (long int)-51);
+//    sprintf(buffer, "%- 5li %-5hi %12hu %-4lu %hi %li %hi %li",
+//            (long int)125123123123, (short int)160, (unsigned short)101,
+//            (unsigned long)210, (short int)0, (long int)0, (short int)-25,
+//            (long int)-51);
+//    ck_assert_str_eq(s21_buffer, buffer);
+//}
+//END_TEST
 
 START_TEST(s21_nums3_f) {
     char s21_buffer[256] = {0};
@@ -196,12 +196,12 @@ Suite* sprintf_suite(void) {
     suite_add_tcase(s, tc_core);
     tcase_add_test(tc_core, test_printf_e);
     suite_add_tcase(s, tc_core);
-    tcase_add_test(tc_core, s21_chars_f);
-    suite_add_tcase(s, tc_core);
-    tcase_add_test(tc_core, s21_nums_f);
-    suite_add_tcase(s, tc_core);
-    tcase_add_test(tc_core, s21_nums2_f);
-    suite_add_tcase(s, tc_core);
+//    tcase_add_test(tc_core, s21_chars_f);
+//    suite_add_tcase(s, tc_core);
+//    tcase_add_test(tc_core, s21_nums_f);
+//    suite_add_tcase(s, tc_core);
+//    tcase_add_test(tc_core, s21_nums2_f);
+//    suite_add_tcase(s, tc_core);
     tcase_add_test(tc_core, test_printf_o);
     suite_add_tcase(s, tc_core);
     tcase_add_test(tc_core, test_printf_x);
@@ -288,7 +288,7 @@ int main() {
     
       s = sprintf_suite();
       runner = srunner_create(s);
-    //srunner_set_fork_status(runner, CK_NOFORK);
+      srunner_set_fork_status(runner, CK_NOFORK);
       srunner_run_all(runner, CK_NORMAL);
       no_failed = srunner_ntests_failed(runner);
       srunner_free(runner);
@@ -296,7 +296,5 @@ int main() {
         printf("TEST OK\n");
     else
         printf("SMTH GETS WRONG\n");
-      return 0;
-
     return 0;
 }
