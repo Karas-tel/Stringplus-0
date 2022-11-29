@@ -288,7 +288,7 @@ int main() {
     
       s = sprintf_suite();
       runner = srunner_create(s);
-    srunner_set_fork_status(runner, CK_NOFORK);
+    //srunner_set_fork_status(runner, CK_NOFORK);
       srunner_run_all(runner, CK_NORMAL);
       no_failed = srunner_ntests_failed(runner);
       srunner_free(runner);
