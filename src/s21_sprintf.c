@@ -549,7 +549,7 @@ void update_acc(long double val, flags* flags, char specifier, char e_or_f, int 
         my_dtoe(&val, zero_flag);
     if (!flags->hash && temp.pos > 0) {
         int i = temp.pos - 1;
-        while (temp.buffer[i] == '0' && i > 0) {
+        while (i > 0 && temp.buffer[i] == '0') {
            flags->acc -= 1;
          //   printf("data = %c, acc = %d\n", temp.buffer[i], flags->acc);
             --i;
