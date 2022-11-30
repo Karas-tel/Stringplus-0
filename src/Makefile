@@ -6,6 +6,9 @@ all: clean s21_string.a test gcov_report
 test: main.c s21_string.a
 	gcc -o test $(CFLAGS) main.c s21_string.a -lcheck -lm -lpthread
 	
+test_ubuntu: main.c s21_string.a
+	gcc -o test $(CFLAGS) main.c s21_string.a -lcheck -lm -lpthread -lsubunit
+	
 s21_string.a: s21_sprintf.o s21_string.o
 	ar r s21_string.a s21_string.o s21_sprintf.o
 
