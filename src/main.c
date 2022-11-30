@@ -63,8 +63,8 @@ START_TEST(s21_nums3_f) {
 
     char s21_buffer2[256] = {0};
     char buffer2[256] = {0};
-    s21_sprintf(s21_buffer2, "%f %f %f %f %f %f", 1.0/0.0,  1.0/0.0, 0.0/1.0, 1.0/0.0, -1.0/0.0, -0.0/1.0);
-    sprintf(buffer2, "%f %f %f %f %f %f", 1.0/0.0,  1.0/0.0, 0.0/1.0,
+    s21_sprintf(s21_buffer2, "%f %f %f %f %f %f", 0.0/0.0,  1.0/0.0, 0.0/1.0, 1.0/0.0, -1.0/0.0, -0.0/1.0);
+    sprintf(buffer2, "%f %f %f %f %f %f", 0.0/0.0,  1.0/0.0, 0.0/1.0,
                      1.0/0.0, -1.0/0.0, -0.0/1.0);
     ck_assert_str_eq(s21_buffer2, buffer2);
 
@@ -80,8 +80,8 @@ START_TEST(test_printf_d) {
     char buff[100];
     char buff2[100];
 
-    int f = s21_sprintf(buff2, "blblbblblc%c%+4d", '$', 10000);
-    int s = sprintf(buff, "blblbblblc%c%+4d", '$', 10000);
+    int f = s21_sprintf(buff2, "blblbblblc%c%+4d%+.0d", '$', 10000, 0);
+    int s = sprintf(buff, "blblbblblc%c%+4d%+.0d", '$', 10000, 0);
     ck_assert_int_eq(f, s);
     ck_assert_str_eq(buff, buff2);
     f = s21_sprintf(buff2, "blblbblblc%c%+04d", '$', 10);
@@ -145,6 +145,10 @@ START_TEST(test_printf_e) {
     int s2 = sprintf(buff, "%4.4E %-3.5E %07E %+-.E", 1000.0, -0.0000002, 0.0, 200e+100);
     ck_assert_int_eq(f2, s2);
     ck_assert_str_eq(buff, buff2);
+    int f3 = s21_sprintf(buff2, "%LE %-E %E % E", (long double)0.0/0.0, 1.0/0.0, -1.0/0.0, 1.0/0.0);
+    int s3 = sprintf(buff, "%LE %-E %E % E", (long double)0.0/0.0, 1.0/0.0, -1.0/0.0, 1.0/0.0);
+    ck_assert_int_eq(f3, s3);
+    ck_assert_str_eq(buff, buff2);
 } END_TEST
 
 START_TEST(test_printf_g) {
@@ -187,6 +191,23 @@ START_TEST(test_printf_p_n) {
     ck_assert_int_eq(val2, val3);
     ck_assert_str_eq(buff, buff2);
 } END_TEST
+
+START_TEST(test_printf_s_c) {
+    char data[100];
+    char data1[100];
+    sprintf(data, "|%32s|\n", "111");
+    s21_sprintf(data1, "|%32s|\n", "111");
+    ck_assert_str_eq(data, data1);
+    sprintf(data, "%10c %-10c", 'a', 'b');
+    s21_sprintf(data1, "%10c %-10c", 'a', 'b');
+    ck_assert_str_eq(data, data1);
+    sprintf(data, "|%32s|\n", "abc");
+        s21_sprintf(data1, "|%32s|\n", "abc");
+        ck_assert_str_eq(data, data1);
+        int c = s21_sprintf(data, "|%.03s|\n", "hello");
+        int d = sprintf(data1, "|%.03s|\n", "hello");
+        ck_assert_int_eq(c, d);
+} END_TEST
 //
 //
 //
@@ -197,26 +218,27 @@ Suite* sprintf_suite(void) {
     tc_core = tcase_create("core");
     tcase_add_test(tc_core, test_printf_d);
 
-    suite_add_tcase(s, tc_core);
+
     tcase_add_test(tc_core, test_printf_f);
-    suite_add_tcase(s, tc_core);
+
     tcase_add_test(tc_core, test_printf_e);
-    suite_add_tcase(s, tc_core);
+
     tcase_add_test(tc_core, test_printf_g);
-    suite_add_tcase(s, tc_core);
+
     tcase_add_test(tc_core, s21_chars_f);
-    suite_add_tcase(s, tc_core);
+
     tcase_add_test(tc_core, s21_nums_f);
-    suite_add_tcase(s, tc_core);
+
     tcase_add_test(tc_core, s21_nums2_f);
-    suite_add_tcase(s, tc_core);
+
     tcase_add_test(tc_core, test_printf_o);
-    suite_add_tcase(s, tc_core);
+
     tcase_add_test(tc_core, test_printf_x);
-    suite_add_tcase(s, tc_core);
+
     tcase_add_test(tc_core, test_printf_p_n);
-    suite_add_tcase(s, tc_core);
+
     tcase_add_test(tc_core, s21_nums3_f);
+    tcase_add_test(tc_core, test_printf_s_c);
     suite_add_tcase(s, tc_core);
     return s;
 }
@@ -232,8 +254,8 @@ int main() {
     //double d = 5.0;
 //    int d = 10;
 //    int e;
-    int f = s21_sprintf(buff2,  "%+.5d %+6.5d %+.5d %+6.5d %-2d %-2.5d %-4.d", 10, 10, -10, -10, 1, 10, 0);
-    int ss = sprintf(buff, "%+.5d %+6.5d %+.5d %+6.5d %-2d %-2.5d %-4.d", 10, 10, -10, -10, 1, 10, 0);
+    int f = s21_sprintf(buff2,  "blblbblblc%c%+4d%+.0d", '$', 10000, 0);
+    int ss = sprintf(buff, "blblbblblc%c%+4d%+.0d", '$', 10000, 0);
     printf("%s- %d\n", buff,ss);
     printf("%s- %d\n", buff2,f);
 
@@ -290,19 +312,19 @@ int main() {
 //    data1.pos = 6;
 //    shuffle_str(&data1);
    // printf("%s\n" ,data1.buffer);
-//     int no_failed;
-//      Suite *s;
-//      SRunner *runner;
-//
-//      s = sprintf_suite();
-//      runner = srunner_create(s);
-//      srunner_set_fork_status(runner, CK_NOFORK);
-//      srunner_run_all(runner, CK_NORMAL);
-//      no_failed = srunner_ntests_failed(runner);
-//      srunner_free(runner);
-//    if (no_failed == 0)
-//        printf("TEST OK\n");
-//    else
-//        printf("SMTH GETS WRONG\n");
+     int no_failed;
+      Suite *s;
+      SRunner *runner;
+
+      s = sprintf_suite();
+      runner = srunner_create(s);
+      srunner_set_fork_status(runner, CK_NOFORK);
+      srunner_run_all(runner, CK_NORMAL);
+      no_failed = srunner_ntests_failed(runner);
+      srunner_free(runner);
+    if (no_failed == 0)
+        printf("TEST OK\n");
+    else
+        printf("SMTH GETS WRONG\n");
     return 0;
 }

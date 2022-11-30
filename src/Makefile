@@ -1,7 +1,7 @@
 #CFLAGS=-Wall -Werror -Wextra
 CFLAGS = -Wall -Werror -Wextra -std=c11 --coverage
 
-all: clean s21_string.a test
+all: clean s21_string.a test gcov_report
 
 test: main.c s21_string.a
 	gcc -o test $(CFLAGS) main.c s21_string.a -lcheck -lm -lpthread
@@ -15,12 +15,11 @@ s21_sprintf.o: s21_sprintf.c
 s21_string.o: s21_string.c
 	gcc $(CFLAGS) -c s21_string.c
 	
-gcov_report:
+gcov_report: test
+	./test
+	gcovr --html-details rep.html
 	
-
-clean:
-	rm -rf *.o *.a
-
+	
 check:
 	cp ../../materials/linters/.clang-format ../../src/.clang-format
 	clang-format -i *.c
@@ -29,7 +28,7 @@ check:
 	
 
 clean:
-	rm -rf *.o *.gcda
+	rm -rf *.o *.gcda *.a *.html
 	rm -f test
 	
 	
