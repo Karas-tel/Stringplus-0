@@ -1,7 +1,7 @@
 #CFLAGS=-Wall -Werror -Wextra
-CFLAGS = -Wall -Werror -Wextra -std=c11
+CFLAGS = -Wall -Werror -Wextra -std=c11 --coverage
 
-all: test
+all: clean s21_string.a test
 
 test: main.c s21_string.a
 	gcc -o test $(CFLAGS) main.c s21_string.a -lcheck -lm -lpthread
@@ -14,6 +14,9 @@ s21_sprintf.o: s21_sprintf.c
 
 s21_string.o: s21_string.c
 	gcc $(CFLAGS) -c s21_string.c
+	
+gcov_report:
+	
 
 clean:
 	rm -rf *.o *.a
@@ -25,6 +28,9 @@ check:
 	cppcheck --enable=all --suppress=missingIncludeSystem *.c
 	
 
+clean:
+	rm -rf *.o *.gcda
+	rm -f test
 	
 	
 git:

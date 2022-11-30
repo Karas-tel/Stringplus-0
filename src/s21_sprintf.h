@@ -64,6 +64,7 @@ void sprint_o (flags* flags, int* counter, int flag_zero, char** str, _string* d
 void sprint_x (flags* flags, int* counter, int flag_zero, char** str, _string* data, char specifier);
 void sprint_s(flags* flags, int *counter, char **str, va_list param);
 void supp_d(flags* flags, va_list param, char** str, int* counter);
+void supp_u(flags* flags, va_list param, char** str, int* counter);
 void supp_f(flags* flags, va_list param, char** str, int* counter);
 void supp_e(flags* flags, va_list param, char** str, int* counter, const char* format);
 void supp_g(flags* flags, va_list param, char** str, int* counter, const char* format);
