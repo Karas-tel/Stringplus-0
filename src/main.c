@@ -10,7 +10,7 @@
 #include <check.h>
 #include "test_data.h"
 #include "s21_string.h"
-
+//----------------------TEST SPRINTF----------------------
 START_TEST(s21_chars_f) {
    char s21_buffer[256] = {0};
    char buffer[256] = {0};
@@ -208,9 +208,7 @@ START_TEST(test_printf_s_c) {
         int d = sprintf(data1, "|%.03s|\n", "hello");
         ck_assert_int_eq(c, d);
 } END_TEST
-//
-//
-//
+
 Suite* sprintf_suite(void) {
     Suite* s;
     TCase* tc_core;
@@ -242,6 +240,33 @@ Suite* sprintf_suite(void) {
     suite_add_tcase(s, tc_core);
     return s;
 }
+//-----------------TEST to_upper(lower) trim insert---------------
+START_TEST(test_upper_lower) {
+    char* buff = "ASDFGHJK1234!@#$";
+    char* buff2 = "asdfghjk1234!@#$";
+    char* buff3 = to_lower(buff);
+    ck_assert_str_eq(buff2, buff3);
+    free(buff3);
+    buff3 = to_upper(buff2);
+    ck_assert_str_eq(buff, buff3);
+    free(buff3);
+//    buff3 = to_upper(NULL);
+//    ck_assert_str_eq(NULL, buff3);
+//    free(buff3);
+//
+} END_TEST
+
+Suite* additional_func_suite(void) {
+    Suite* s;
+    TCase* tc_core;
+    s = suite_create("additional_func");
+    tc_core = tcase_create("core");
+    tcase_add_test(tc_core, test_upper_lower);
+    suite_add_tcase(s, tc_core);
+    return s;
+}
+
+
 
 int main() {
 //    //char ch = 'c';
@@ -312,19 +337,23 @@ int main() {
 //    data1.pos = 6;
 //    shuffle_str(&data1);
    // printf("%s\n" ,data1.buffer);
-     int no_failed;
-      Suite *s;
-      SRunner *runner;
-
-      s = sprintf_suite();
-      runner = srunner_create(s);
-      srunner_set_fork_status(runner, CK_NOFORK);
-      srunner_run_all(runner, CK_NORMAL);
-      no_failed = srunner_ntests_failed(runner);
-      srunner_free(runner);
+    //size_t l = strlen(NULL);
+    Suite* tests[] = {
+        sprintf_suite(),
+        additional_func_suite(),
+        NULL
+    };
+    int no_failed = 0;
+    for (int i = 0; tests[i]; ++i) {
+        SRunner *runner;
+        runner = srunner_create(tests[i]);
+        srunner_set_fork_status(runner, CK_NOFORK);
+        srunner_run_all(runner, CK_NORMAL);
+        no_failed += srunner_ntests_failed(runner);
+        srunner_free(runner);
+    }
     if (no_failed == 0)
         printf("TEST OK\n");
-    else
-        printf("SMTH GETS WRONG\n");
+   
     return 0;
 }
