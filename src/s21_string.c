@@ -48,7 +48,7 @@ void* to_lower(const char *str) {
 void *insert(const char *src, const char *str, size_t start_index) {
     char* str_cp = (char*) calloc(s21_strlen(str) + s21_strlen(src) + 1, sizeof(char));
     size_t i = 0;
-    if (start_index > s21_strlen(src) || str_cp == NULL)
+    if (start_index > s21_strlen(src) || str_cp == NULL) 
         return NULL;
     while (i < start_index) {
         str_cp[i] = src[i];

@@ -250,10 +250,20 @@ START_TEST(test_upper_lower) {
     buff3 = to_upper(buff2);
     ck_assert_str_eq(buff, buff3);
     free(buff3);
-//    buff3 = to_upper(NULL);
-//    ck_assert_str_eq(NULL, buff3);
-//    free(buff3);
-//
+} END_TEST
+
+START_TEST(test_insert) {
+    char* buff = "0123456789";
+    char* buff2 = "9999";
+    char* buff3 = insert(buff, buff2, 0);
+    ck_assert_str_eq("99990123456789", buff3);
+    free(buff3);
+    buff3 = insert(buff, buff2, 2);
+    ck_assert_str_eq("01999923456789", buff3);
+    free(buff3);
+    buff3 = insert(buff, buff2, 25);
+    ck_assert_str_eq(NULL, buff3);
+    free(buff3);
 } END_TEST
 
 Suite* additional_func_suite(void) {
@@ -262,6 +272,7 @@ Suite* additional_func_suite(void) {
     s = suite_create("additional_func");
     tc_core = tcase_create("core");
     tcase_add_test(tc_core, test_upper_lower);
+    tcase_add_test(tc_core, test_insert);
     suite_add_tcase(s, tc_core);
     return s;
 }
