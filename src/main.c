@@ -145,11 +145,11 @@ START_TEST(test_printf_e) {
     int s2 = sprintf(buff, "%4.4E %-3.5E %07E %+-.E", 1000.0, -0.0000002, 0.0, 200e+100);
     ck_assert_int_eq(f2, s2);
     ck_assert_str_eq(buff, buff2);
-    //тупит валгринд
- //   int f3 = s21_sprintf(buff2, "%LE %-E %E % E", (long double)0.0/0.0, 1.0/0.0, -1.0/0.0, 1.0/0.0);
-//    int s3 = sprintf(buff, "%LE %-E %E % E", (long double)0.0/0.0, 1.0/0.0, -1.0/0.0, 1.0/0.0);
-//    ck_assert_int_eq(f3, s3);
-//    ck_assert_str_eq(buff, buff2);
+    
+   int f3 = s21_sprintf(buff2, "%LE %-E %E % E", (long double)0.0/0.0, 1.0/0.0, -1.0/0.0, 1.0/0.0);
+  int s3 = sprintf(buff, "%LE %-E %E % E", (long double)0.0/0.0, 1.0/0.0, -1.0/0.0, 1.0/0.0);
+   ck_assert_int_eq(f3, s3);
+   ck_assert_str_eq(buff, buff2);
 } END_TEST
 
 START_TEST(test_printf_g) {

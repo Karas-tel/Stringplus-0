@@ -186,8 +186,9 @@ void sprint_f (flags* flags, int* counter, int flag_zero, char** str, _string* d
     }
 }
 void sprint_e (flags* flags, int* counter, char** str, _string* data, long double val, int zero_flag, char specifier) {
-    
-    int exp = my_dtoe(&val, zero_flag);
+    int exp = 0;
+    if (val != INFINITY && val != -INFINITY && val != NAN)
+        exp = my_dtoe(&val, zero_flag);
     
     my_dtos(val, data, flags, specifier);
     if (data->buffer[0] != 'n' && data->buffer[0] != 'i' && data->buffer[1] != 'i' && data->buffer[0] != 'N' && data->buffer[0] != 'I' && data->buffer[1] != 'I') {
