@@ -48,20 +48,24 @@ void* to_lower(const char *str) {
 void *insert(const char *src, const char *str, size_t start_index) {
     char* str_cp = (char*) calloc(s21_strlen(str) + s21_strlen(src) + 1, sizeof(char));
     size_t i = 0;
-    if (start_index > s21_strlen(src) || str_cp == NULL) 
-        return NULL;
-    while (i < start_index) {
-        str_cp[i] = src[i];
-        ++i;
+    if (start_index <= s21_strlen(src) || str_cp != NULL) {
+        while (i < start_index) {
+            str_cp[i] = src[i];
+            ++i;
+        }
+        size_t i_temp = i, j = 0;
+        while (str[j] != '\0') {
+            str_cp[i++] = str[j++];
+        }
+        while(src[i_temp] != '\0') {
+            str_cp[i++] = src[i_temp++];
+        }
+        str_cp[i] = '\0';
+    } else {
+        if (str_cp != NULL)
+            free(str_cp);
+        str_cp = NULL;
     }
-    size_t i_temp = i, j = 0;
-    while (str[j] != '\0') {
-        str_cp[i++] = str[j++];
-    }
-    while(src[i_temp] != '\0') {
-        str_cp[i++] = src[i_temp++];
-    }
-    str_cp[i] = '\0';
     return str_cp;
 }
 
