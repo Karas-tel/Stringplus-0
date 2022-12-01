@@ -35,7 +35,7 @@ struct Pattern {
 
 int s21_sscanf(const char *string, const char *format, ...);
 int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg);
-int s21_skip(const char **string, const char **format);
+int s21_skip(const char *string, const char *format);
 int skip_space(const char *str);
 
 int get_pattern(const char *format, struct Pattern *patt);

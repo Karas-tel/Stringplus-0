@@ -49,5 +49,8 @@ int main() {
 
   sscanf("Age: -775a666", "Age: %u", &num_i);  // %n
   printf("%d\n", num_i);
+  char c;
+  sscanf("Age:4 -775a666", "Age:%c", &c);  // %n
+  printf("%c\n", c);
   return 0;
 }

@@ -10,15 +10,19 @@ struct Buffer {
   long double b_long_double;
   float b_float;
   double b_double;
+
+  unsigned int b_u_int;
+  unsigned short int b_u_short_int;
+  unsigned long int b_u_long_int;
 };
 
 _bool is_digit(char c) { return c <= '9' && c >= '0' ? TRUE : FALSE; }
 
-int s21_skip(const char **string, const char **format) {
+int s21_skip(const char *string, const char *format) {
   int count = 0;
-  while (**string == **format) {
-    (*string)++;
-    (*format)++;
+  while (*string == *format) {
+    string++;
+    format++;
     count++;
   }
   return count;
@@ -241,14 +245,25 @@ int s21_sscanf(const char *string, const char *format, ...) {
 }
 
 int read_double(const char *string, struct Pattern patt, long double *d) {
-  int displacement = 0;
+  int displacement = 6;
+  displacement += patt.width;  //
+  sscanf(string, "%Lf", d);
+  return displacement;
+}
+
+int read_char(const char *string, char *c) {
+  int displacement = 1;
+  *c = *string;
+  return displacement;
 }
 
 int read_string(const char *string, struct Pattern patt, struct Buffer *buff) {
   int displacement = 0;
   switch (patt.spec) {
     case C_SPEC:
-
+      char c;
+      displacement = read_char(string, &c);
+      buff->b_char = c;
       break;
     case D_SPEC:
 
@@ -260,7 +275,7 @@ int read_string(const char *string, struct Pattern patt, struct Buffer *buff) {
     case G_BIG_SPEC:
       switch (patt.size_var) {
         case L_SIZE:
-          double d;
+          long double d;  // double
           displacement = read_double(string, patt, &d);
           buff->b_double = d;
           break;
@@ -270,7 +285,7 @@ int read_string(const char *string, struct Pattern patt, struct Buffer *buff) {
           buff->b_long_double = ld;
           break;
         default:
-          float f;
+          long double f;  // float
           displacement = read_double(string, patt, &f);
           buff->b_float = f;
           break;
@@ -279,109 +294,102 @@ int read_string(const char *string, struct Pattern patt, struct Buffer *buff) {
     default:
       break;
   }
+  return displacement;
 }
 
 int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
   int counter = 0;
   int form_diss = 0;
   int str_diss = 0;
-  int form_diss_global = 0;
-  int str_diss_global = 0;
-  // double f;
-  s21_skip(&string, &format);
-  form_diss_global = skip_space(format);
-  /*
-  for (const char *c = format; *c;) {
-    // if (*c != '%') {
-    //   printf("%c\n", *c);
-    //   continue;
-    // }
-    switch (*c) {
-      case 'd':
-        // printf("d counter: %d %c\n", counter, *c);
-        // d = va_arg(factor, int);
-        int *d = (int *)va_arg(scanf_arg, int *);
-        // printf("%d\n", *d);
-        *d = (int)*string - '0';
-        string++;
-        format += 2;
-        s21_skip(&string, &format);
-        c = format;
-        break;
-      case 'f':
-        // f = va_arg(scanf_arg, float);
-        //  printf("%f\n", f);
-        break;
-      case 'c':
-        char *simbol = (char *)va_arg(scanf_arg, char *);
-        // printf("%c\n", f);
-        *simbol = *string;
-        break;
-      case '%':
-
-        // printf("%% counter: %d %c\n", counter, *c);
-        c++;
-        break;
-      default:
-        // printf("def counter: %d %c\n", counter, *c);
-        c++;
-    }
-    // printf("bs counter: %d %c\n", counter, *c);
-    counter++;
-  }
-  */
   struct Pattern patt;
   struct Buffer buff;
+
+  int skip = s21_skip(string, format);
+  int form_diss_global = skip;  // + skip_space(format);
+  int str_diss_global = skip;   // + skip_space(string);
+
   while ((form_diss = get_pattern(format + form_diss_global, &patt)) > 0 &&
          (str_diss = read_string(string + str_diss_global, patt, &buff)) > 0) {
-    switch (patt.spec) {
-      case C_SPEC:
-        char *c = (char *)va_arg(scanf_arg, char *);
-        *c = buff.b_char;
-        break;
-      case D_SPEC:
-        int *i = (int *)va_arg(scanf_arg, int *);
-        *i = buff.b_int;
-        break;
-      case E_SPEC:
-      case E_BIG_SPEC:
-      case F_SPEC:
-      case G_SPEC:
-      case G_BIG_SPEC:
-        switch (patt.size_var) {
-          case L_SIZE:
-            double *d = (double *)va_arg(scanf_arg, double *);
-            *d = buff.b_double;
-            break;
-          case L_BIG_SIZE:
-            long double *ld = (long double *)va_arg(scanf_arg, long double *);
-            *ld = buff.b_long_double;
-            break;
-          default:
-            float *f = (float *)va_arg(scanf_arg, float *);
-            *f = buff.b_float;
-            break;
-        }
-        break;
-      default:
-        break;
+    form_diss_global += form_diss;  // + skip_space(format);
+    str_diss_global += str_diss;    // + skip_space(string);
+    skip = s21_skip(string + str_diss_global, format + form_diss_global);
+    form_diss_global += skip;  // + skip_space(format);
+    str_diss_global += skip;   // + skip_space(string);
+    if (patt.recording == TRUE) {
+      switch (patt.spec) {
+        case C_SPEC:
+          char *c = (char *)va_arg(scanf_arg, char *);
+          *c = buff.b_char;
+          break;
+        case D_SPEC:
+          int *i = (int *)va_arg(scanf_arg, int *);
+          *i = buff.b_int;
+          switch (patt.size_var) {
+            case L_SIZE:
+              long int *li = (long int *)va_arg(scanf_arg, long int *);
+              *li = buff.b_long_int;
+              break;
+            case H_SIZE:
+              short int *si = (short int *)va_arg(scanf_arg, short int *);
+              *si = buff.b_short_int;
+              break;
+            case NO_SIZE:
+              int *i = (int *)va_arg(scanf_arg, int *);
+              *i = buff.b_int;
+              break;
+            default:
+              break;
+          }
+          break;
+        case E_SPEC:
+        case E_BIG_SPEC:
+        case F_SPEC:
+        case G_SPEC:
+        case G_BIG_SPEC:
+          switch (patt.size_var) {
+            case L_SIZE:
+              double *d = (double *)va_arg(scanf_arg, double *);
+              *d = buff.b_double;
+              break;
+            case L_BIG_SIZE:
+              long double *ld = (long double *)va_arg(scanf_arg, long double *);
+              *ld = buff.b_long_double;
+              break;
+            case NO_SIZE:
+              float *f = (float *)va_arg(scanf_arg, float *);
+              *f = buff.b_float;
+              break;
+            default:
+              break;
+          }
+          break;
+        default:
+          break;
+      }
     }
   }
   va_end(scanf_arg);
-  return 0;
+  return counter;
 }
 
 int main(void) {
   // int age = 0, wei = 0;
-  // s21_sscanf("Age:1 \t Weight:2", "Age:%d \t Weight:%d", &age, &wei);
-  struct Pattern patt;
-  // print_pattern(patt);
-  const char *str = "%l%";
+  // double lf = 9.9;
+  long double llf = 9.9;
+  float f = 9.9;
+  float ff = 9.9;
+  char c = 't';
+  s21_sscanf("Age:-85E-2 Age:-86E-2 Age:-87E-2i", "Age:%lf Age:%Lf Age:%f%c",
+             &ff, &llf, &f, &c);
+  printf("%f %Lf %f %c\n", ff, llf, f, c);
+  // struct Pattern patt;
+  // // print_pattern(patt);
+  // const char *str = "%l%";
 
-  get_pattern(str, &patt);
-  print_pattern(patt);
-  while (*str != '\0') {
-    printf("%c", *str++);
-  }
+  // get_pattern(str, &patt);
+  // print_pattern(patt);
+  // while (*str != '\0') {
+  //   printf("%c", *str++);
+  // }
   return 0;
 }

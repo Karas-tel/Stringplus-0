@@ -33,5 +33,5 @@ git:
 	git add *.h
 	#git add *.sh
 	git add Makefile
-	git commit -m "read_double"
+	git commit -m "read_char"
 	git push origin developShelacor
