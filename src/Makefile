@@ -3,6 +3,8 @@ CFLAGS = -Wall -Werror -Wextra -std=c11 --coverage
 
 all: clean s21_string.a test gcov_report
 
+ubuntu: clean s21_string.a test_ubuntu gcov_report
+
 test: main.c s21_string.a
 	gcc -o test $(CFLAGS) main.c s21_string.a -lcheck -lm -lpthread
 	
