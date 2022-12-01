@@ -23,7 +23,7 @@ typedef enum {
   ERROR_SPEC
 } specifier;
 
-typedef enum { TRUE, FALSE } _bool;
+typedef enum _bool { FALSE, TRUE } _bool;
 typedef enum { L_SIZE, L_BIG_SIZE, H_SIZE, NO_SIZE } size_variable;
 
 struct Pattern {

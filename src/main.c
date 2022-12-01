@@ -30,7 +30,7 @@ int main() {
   printf("%x\n", num_i16);
 
   sscanf("Age: 567", "Age: %o", &num_i16);  // int_8 [0-7]
-  printf("%o\n\n", num_i16);
+  printf("%o %d\n\n", num_i16, num_i16);
 
   long double num_ld = 1;
   sscanf("Age: 776676.78989", "Age: %20Lf", &num_ld);  // long double
