@@ -302,6 +302,65 @@ Suite* additional_func_suite(void) {
     return s;
 }
 
+//------------TEST STRING.H-----------------------------
+START_TEST(test_memchr) {
+    const char* buff = "ASDFGHJK1234!@#$";
+    char* buff2 = s21_memchr(buff, 'G', 5);
+    char* buff3 = memchr(buff, 'G', 5);
+    ck_assert_str_eq(buff2, buff3);
+    buff2 = s21_memchr(buff, 'G', 4);
+    ck_assert_ptr_null(buff2);
+    buff2 = s21_memchr("", 'G', 5);
+    ck_assert_ptr_null(buff2);
+    buff2 = s21_memchr(buff, '\0', 25);
+    buff3 = memchr(buff, '\0', 25);
+    ck_assert_str_eq(buff2, buff3);
+} END_TEST
+
+START_TEST(test_memcmp) {
+    const char* buff = "ASDFGHJK1234!@#$";
+    const char* buff1 = "ASDFGHJK1234!@#$";
+    ck_assert_int_eq(memcmp(buff, buff1, 0), s21_memcmp(buff, buff1, 0));
+    ck_assert_int_eq(memcmp(buff, buff1, 10), s21_memcmp(buff, buff1, 10));
+    buff = " ";
+    buff1 = "ASDFGHJK1234!@#$";
+    ck_assert_int_eq(memcmp(buff, buff1, 0), s21_memcmp(buff, buff1, 0));
+    ck_assert_int_eq(memcmp(buff, buff1, 10), s21_memcmp(buff, buff1, 10));
+    buff = "";
+    buff1 = "";
+    ck_assert_int_eq(memcmp(buff, buff1, 0), s21_memcmp(buff, buff1, 0));
+    ck_assert_int_eq(memcmp(buff, buff1, 10), s21_memcmp(buff, buff1, 10));
+
+    buff = "ASDFGHJK1234!@#$/0asd";
+    buff1 = "A/0SDFGHJK1234!@#$";
+    ck_assert_int_eq(memcmp(buff, buff1, 100), s21_memcmp(buff, buff1, 100));
+    
+} END_TEST
+
+START_TEST(test_memcpy) {
+    const char* src = "ASDFGHJK1234!@#$";
+    char* dest1[16];
+    char* dest2[16];
+   // ck_assert_str_eq(memcpy(dest, src, 100), s21_memcpy(dest, src, 100));
+    char* res1 = memcpy(dest1, src, 5);
+    char* res2 = s21_memcpy(dest2, src, 5);
+    ck_assert_str_eq(res1, res2);
+    
+} END_TEST
+
+
+
+Suite* main_func_suite(void) {
+    Suite* s;
+    TCase* tc_core;
+    s = suite_create("main_func");
+    tc_core = tcase_create("core");
+    tcase_add_test(tc_core, test_memchr);
+    tcase_add_test(tc_core, test_memcmp);
+    tcase_add_test(tc_core, test_memcpy);
+    suite_add_tcase(s, tc_core);
+    return s;
+}
 
 
 int main() {
@@ -309,12 +368,27 @@ int main() {
 //    int g = 298837248;
 //    while (g >= 10)
 //        g /= 10;
-//    printf("g = %d\n", g);
+////    printf("g = %d\n", g);
+//    char *memcpy_res;
+//     char str5[] = "1112151ergergfg515";
+//     size_t n_cpy = s21_strlen(str5);
+//     char str6[n_cpy];
+////     memcpy_res = s21_memcpy(memcpy_res, str5, 100);
+////     printf("memcpy_res = %s\n", memcpy_res);
+//     memcpy_res = memcpy(memcpy_res, str5, 100);
+//     printf("strcpy ORIGINAL = %s\n", memcpy_res);
+//     printf("\n");
+
     char buff[200];
     char buff2[200];
     //double d = 5.0;
 //    int d = 10;
 //    int e;
+    
+//    const char* src = "ASDFGHJK1234!@#$";
+//    char* dest = "ASDFGHJK1234!@#$";
+//    memcpy(dest, src, 100);
+//    printf("dest = %s|\n", dest);
     int f = s21_sprintf(buff2,  "blblbblblc%c%+4d%+.0d", '$', 10000, 0);
     int ss = sprintf(buff, "blblbblblc%c%+4d%+.0d", '$', 10000, 0);
     printf("%s- %d\n", buff,ss);
@@ -333,7 +407,9 @@ int main() {
     char* str4 = trim(str, " '2");
     printf("|%s|\n", str4);
     free(str4);
-
+    char* str_null = NULL;
+    
+   // strlen(str_null);
 
   // free(str2);
 
@@ -377,6 +453,7 @@ int main() {
     Suite* tests[] = {
         sprintf_suite(),
         additional_func_suite(),
+        main_func_suite(),
         NULL
     };
     int no_failed = 0;

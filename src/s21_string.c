@@ -10,12 +10,208 @@
 
 #define BUFF_SIZE 256
 
-    size_t s21_strlen(const char *str) {
-        size_t len = 0;
-        while (*(str++))
-            ++len;
-        return len;
+
+size_t s21_strlen(const char *str) {
+  size_t len = 0;
+  for (; str[len]; len++)
+    ;
+  return len;
+}
+//Выполняет поиск первого вхождения символа c (беззнаковый тип) в первых n байтах строки, на которую указывает аргумент str.
+
+void *s21_memchr(const void *str, int c, size_t n) {
+  unsigned char *ch = (unsigned char *)str;
+  unsigned char *res = NULL;
+  while (n-- > 0) {
+    if (*ch == c) {
+      res = ch;
+      break;
     }
+    ch++;
+  }
+  return res;
+}
+
+//Сравнивает первые n байтов str1 и str2.
+
+int s21_memcmp(const void *str1, const void *str2, size_t n) {
+  int res = 0;
+  const unsigned char *ch1 = str1;
+  const unsigned char *ch2 = str2;
+  while (n-- > 0) {
+    if (*ch1 != *ch2) {
+      res = *ch1 - *ch2;
+      break;
+    }
+    ch1++;
+    ch2++;
+  }
+  return res;
+}
+
+//Копирует n символов из src в dest.
+void *s21_memcpy(void *dest, const void *src, size_t n) {
+char* ch_dest = (char*) dest;
+ char *ch_src = (char*) src;
+  while (n-- > 0 && *ch_src != '\0') {
+    *(ch_dest++) = *(ch_src++);
+  }
+  *ch_dest = '\0';
+  return dest;
+}
+void *s21_memmove(void *dest, const void *src, size_t n) {
+  // более безопасная memcpy - отрабатывает перехлесты памяти
+  if (dest <= src) {
+    s21_memcpy(dest, src, n);
+  } else {
+    unsigned char *ch_end_dest = dest + (n - 1);
+    const unsigned char *ch_end_src = src + (n - 1);
+    while (n-- > 0) {
+      *ch_end_dest-- = *ch_end_src--;
+    }
+  }
+  return dest;
+}
+void *s21_memset(void *str, int c, size_t n) {
+  char *ch = str;
+  while (n-- > 0) {
+    *ch++ = c;
+  }
+  return str;
+}
+char *s21_strcat(char *dest, const char *src) {
+  size_t len_src = s21_strlen(src);
+  char *ch_end_dest = dest + (s21_strlen(dest) - 1);
+  while (len_src-- > 0) {
+    *ch_end_dest++ = *src++;
+  }
+  *ch_end_dest = '\0';
+  return dest;
+}
+char *s21_strncat(char *dest, const char *src, size_t n) {
+  char *ch_end_dest = dest + (s21_strlen(dest) - 1);
+  while (n-- > 0 && *src != '\0') {
+    *ch_end_dest++ = *src++;
+  }
+  *ch_end_dest = '\0';  //если не ставить бывает лезет мусор
+  return dest;
+}
+char *s21_strchr(const char *str, int c) {
+  char *res = NULL;
+  while (*str++) {
+    if (*str == c) {
+      res = (char *)str;
+      break;
+    }
+  }
+  return res;
+}
+int s21_strcmp(const char *str1, const char *str2) {
+  for (; *str1 && *str1 == *str2; str1++, str2++)
+    ;
+  return *str1 - *str2;
+}
+int s21_strncmp(const char *str1, const char *str2, size_t n) {
+  for (; *str1 && *str1 == *str2 && n > 0; str1++, str2++, n--)
+    ;
+  return *str1 - *str2;
+}
+char *s21_strcpy(char *dest, const char *src) {
+  char *ch_dest = dest;
+  while (*src != '\0') {
+    *ch_dest++ = *src++;
+  }
+  *ch_dest = '\0';
+  return dest;
+}
+char *s21_strncpy(char *dest, const char *src, size_t n) {
+  char *ch_dest = dest;
+  while (n > 0 && *src != '\0') {
+    *ch_dest++ = *src++;
+    n--;
+  }
+  *ch_dest = '\0';
+  return dest;
+}
+size_t s21_strcspn(const char *str1, const char *str2) {
+  size_t res = 0;
+  for (size_t i = 0; i < s21_strlen(str1); i++) {
+    for (size_t j = 0; j < s21_strlen(str2); j++) {
+      if (str1[i] == str2[j]) {
+        res = i;
+        j = s21_strlen(str2);
+        i = s21_strlen(str1);
+      } else {
+        res = s21_strlen(str1);
+      }
+    }
+  }
+  return res;
+}
+char *s21_strerror(int errnum) {
+  char *res = NULL;
+  if (errnum < 0 || errnum > 134) {       // smenit dla MACA potom
+    printf("Unknown error: %d", errnum);  // zamenit' na s21_sprintf;
+  } else {
+    res = (char *)s21_errlist[errnum];
+  }
+  return res;
+}
+char *s21_strpbrk(const char *str1, const char *str2) {
+  char *res = NULL;
+  for (size_t i = 0; i < s21_strlen(str1); i++) {
+    for (size_t j = 0; j < s21_strlen(str2); j++) {
+      if (str1[i] == str2[j]) {
+        res = (char *)(str1 + i);
+        j = s21_strlen(str2);
+        i = s21_strlen(str1);
+      }
+    }
+  }
+  return res;
+}
+char *s21_strrchr(const char *str, int c) {
+  char *res = NULL;
+  while (*str++) {
+    if (*str == c) {
+      res = (char *)str;
+    }
+  }
+  return res;
+}
+size_t s21_strspn(const char *str1, const char *str2) {
+  size_t res = 0;
+  for (size_t i = 0; i < s21_strlen(str1); i++) {
+    res = 0;
+    for (size_t j = 0; j < s21_strlen(str2); j++) {
+      if ((str1[i] == str2[j]) && i != (s21_strlen(str1) - 1)){
+        break;
+      }
+      if(str1[i] != str2[j]) {
+        res++;
+        if(res == s21_strlen(str2)) {
+          res = i;
+          j = s21_strlen(str2);
+          i = s21_strlen(str1);
+        }
+      }
+      if((str1[i] == str2[j]) && i == (s21_strlen(str1) - 1)){
+        res = s21_strlen(str1) - 1;
+        }
+    }
+  }
+  return res;
+}
+//-----------------------------------------------------------------------
+
+
+
+//    size_t s21_strlen(const char *str) {
+//        size_t len = 0;
+//        while (*(str++))
+//            ++len;
+//        return len;
+//    }
 
 
 void* to_upper(const char *str) {
