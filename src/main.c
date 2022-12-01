@@ -146,8 +146,8 @@ START_TEST(test_printf_e) {
     ck_assert_int_eq(f2, s2);
     ck_assert_str_eq(buff, buff2);
     
-   int f3 = s21_sprintf(buff2, "%LE %-E %E % E", (long double)0.0/0.0, 1.0/0.0, -1.0/0.0, 1.0/0.0);
-  int s3 = sprintf(buff, "%LE %-E %E % E", (long double)1.0/0.0, 0.0/0.0, -1.0/0.0, 1.0/0.0);
+   int f3 = s21_sprintf(buff2, "%LE %-E %E % E", (long double)0.0/0.0, 0.0/0.0, -1.0/0.0, 1.0/0.0);
+  int s3 = sprintf(buff, "%LE %-E %E % E", (long double)0.0/0.0, 0.0/0.0, -1.0/0.0, 1.0/0.0);
    ck_assert_int_eq(f3, s3);
    ck_assert_str_eq(buff, buff2);
 } END_TEST
@@ -251,6 +251,12 @@ START_TEST(test_upper_lower) {
     buff3 = to_upper(buff2);
     ck_assert_str_eq(buff, buff3);
     free(buff3);
+    buff2 = NULL;
+    buff3 = to_upper(buff2);
+    ck_assert_ptr_null(buff3);
+    buff2 = NULL;
+    buff3 = to_lower(buff2);
+    ck_assert_ptr_null(buff3);
 } END_TEST
 
 START_TEST(test_insert) {
@@ -262,8 +268,25 @@ START_TEST(test_insert) {
     buff3 = insert(buff, buff2, 2);
     ck_assert_str_eq("01999923456789", buff3);
     free(buff3);
-//    buff3 = insert(buff, buff2, 25);
-//    ck_assert_str_eq(NULL, buff3);
+    buff3 = insert(buff, buff2, 25);
+    ck_assert_ptr_null(buff3);
+    
+} END_TEST
+
+START_TEST(test_trim) {
+    char* buff = "     ''''asdfADASSA5522 ASasdaspqp112212''''";
+    char* buff2 = " '2";
+    char* buff3 = trim(buff, buff2);
+    ck_assert_str_eq("asdfADASSA5522 ASasdaspqp11221", buff3);
+    buff = "                   ";
+    buff2 = " ";
+    buff3 = trim(buff, buff2);
+    ck_assert_str_eq("", buff3);
+    free(buff3);
+    buff = NULL;
+    buff2 = " ";
+    buff3 = trim(buff, buff2);
+    ck_assert_ptr_null(buff3);
     
 } END_TEST
 
@@ -274,6 +297,7 @@ Suite* additional_func_suite(void) {
     tc_core = tcase_create("core");
     tcase_add_test(tc_core, test_upper_lower);
     tcase_add_test(tc_core, test_insert);
+    tcase_add_test(tc_core, test_trim);
     suite_add_tcase(s, tc_core);
     return s;
 }
@@ -296,18 +320,18 @@ int main() {
     printf("%s- %d\n", buff,ss);
     printf("%s- %d\n", buff2,f);
 
-    char* str = "     ''''asdfADASSA5522 ASasdaspqp112212''''";
+    char* str = "        ";
     char* str1 = "99999999";
     char* str2 = to_upper(str);
-    char* str3 = insert(str, str1, 3);
+    char* str3 = insert(str, str1, 50);
     printf("%s\n", str2);
     free(str2);
 
 
-    printf("%s\n", str3);
+    printf("str3 = %s\n", str3);
     free(str3);
     char* str4 = trim(str, " '2");
-    printf("%s\n", str4);
+    printf("|%s|\n", str4);
     free(str4);
 
 
