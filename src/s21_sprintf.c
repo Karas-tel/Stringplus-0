@@ -187,7 +187,7 @@ void sprint_f (flags* flags, int* counter, int flag_zero, char** str, _string* d
 }
 void sprint_e (flags* flags, int* counter, char** str, _string* data, long double val, int zero_flag, char specifier) {
     int exp = 0;
-    if (val != INFINITY && val != -INFINITY && val != NAN)
+    if (val != INFINITY && val != -INFINITY)
         exp = my_dtoe(&val, zero_flag);
     
     my_dtos(val, data, flags, specifier);
@@ -655,7 +655,7 @@ void supp_e(flags* flags, va_list param, char** str, int* counter, const char* f
     _string_init(&data);
     if (val > 0)
         flag_zero = 1;
-    else if (val == 0.0)
+    else if (val == 0.0 && 1 / val != -INFINITY)
         flag_zero = 0;
     else if (val < 0.0) {
         flag_zero = -1;
