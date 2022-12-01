@@ -59,6 +59,8 @@ char* ch_dest = (char*) dest;
   *ch_dest = '\0';
   return dest;
 }
+
+//Еще одна функция для копирования n символов из src в dest.
 void *s21_memmove(void *dest, const void *src, size_t n) {
   // более безопасная memcpy - отрабатывает перехлесты памяти
   if (dest <= src) {
@@ -72,6 +74,8 @@ void *s21_memmove(void *dest, const void *src, size_t n) {
   }
   return dest;
 }
+
+//Копирует символ c (беззнаковый тип) в первые n символов строки, на которую указывает аргумент str.
 void *s21_memset(void *str, int c, size_t n) {
   char *ch = str;
   while (n-- > 0) {
@@ -79,6 +83,8 @@ void *s21_memset(void *str, int c, size_t n) {
   }
   return str;
 }
+
+//Добавляет строку, на которую указывает src, в конец строки, на которую указывает dest.
 char *s21_strcat(char *dest, const char *src) {
   size_t len_src = s21_strlen(src);
   char *ch_end_dest = dest + (s21_strlen(dest) - 1);

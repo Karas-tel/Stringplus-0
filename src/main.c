@@ -344,10 +344,31 @@ START_TEST(test_memcpy) {
    // ck_assert_str_eq(memcpy(dest, src, 100), s21_memcpy(dest, src, 100));
     char* res1 = memcpy(dest1, src, 5);
     char* res2 = s21_memcpy(dest2, src, 5);
+    res1 = memcpy(dest1, src, 100);
+    res2 = s21_memcpy(dest2, src, 100);
     ck_assert_str_eq(res1, res2);
     
 } END_TEST
 
+START_TEST(test_memmove) {
+    const char* src = "ASDFGHJK1234!@#$";
+    char* dest1[16];
+    char* dest2[16];
+
+    char* res1 = memmove(dest1, src, 5);
+    char* res2 = s21_memmove(dest2, src, 5);
+    ck_assert_str_eq(res1, res2);
+    res1 = memmove(dest1, src, 100);
+    res2 = s21_memmove(dest2, src, 100);
+    ck_assert_str_eq(res1, res2);
+} END_TEST
+
+
+START_TEST(test_memset) {
+    char str[16] = "ASDFGHJK1234";
+    ck_assert_str_eq(memset(str, 'a', 0), s21_memset(str, 'a', 0));
+    ck_assert_str_eq(memset(str, '\0', 10), s21_memset(str, '\0', 10));
+} END_TEST
 
 
 Suite* main_func_suite(void) {
@@ -358,6 +379,8 @@ Suite* main_func_suite(void) {
     tcase_add_test(tc_core, test_memchr);
     tcase_add_test(tc_core, test_memcmp);
     tcase_add_test(tc_core, test_memcpy);
+    tcase_add_test(tc_core, test_memmove);
+    tcase_add_test(tc_core, test_memset);
     suite_add_tcase(s, tc_core);
     return s;
 }
@@ -389,40 +412,40 @@ int main() {
 //    char* dest = "ASDFGHJK1234!@#$";
 //    memcpy(dest, src, 100);
 //    printf("dest = %s|\n", dest);
-    int f = s21_sprintf(buff2,  "blblbblblc%c%+4d%+.0d", '$', 10000, 0);
-    int ss = sprintf(buff, "blblbblblc%c%+4d%+.0d", '$', 10000, 0);
-    printf("%s- %d\n", buff,ss);
-    printf("%s- %d\n", buff2,f);
-
-    char* str = "        ";
-    char* str1 = "99999999";
-    char* str2 = to_upper(str);
-    char* str3 = insert(str, str1, 50);
-    printf("%s\n", str2);
-    free(str2);
-
-
-    printf("str3 = %s\n", str3);
-    free(str3);
-    char* str4 = trim(str, " '2");
-    printf("|%s|\n", str4);
-    free(str4);
-    char* str_null = NULL;
-    
-   // strlen(str_null);
-
-  // free(str2);
-
-
-//    long double temp = 100e-99;
-//    int counter = 0, flag_plus = 0;
-//    if (temp < 1) {
-//        flag_plus = 0;
-//        while (temp < 1) {
-//            temp*= 10;
-//            ++counter;
-//        }
+//    int f = s21_sprintf(buff2,  "blblbblblc%c%+4d%+.0d", '$', 10000, 0);
+//    int ss = sprintf(buff, "blblbblblc%c%+4d%+.0d", '$', 10000, 0);
+//    printf("%s- %d\n", buff,ss);
+//    printf("%s- %d\n", buff2,f);
 //
+//    char* str = "        ";
+//    char* str1 = "99999999";
+//    char* str2 = to_upper(str);
+//    char* str3 = insert(str, str1, 50);
+//    printf("%s\n", str2);
+//    free(str2);
+//
+//
+//    printf("str3 = %s\n", str3);
+//    free(str3);
+//    char* str4 = trim(str, " '2");
+//    printf("|%s|\n", str4);
+//    free(str4);
+//    char* str_null = NULL;
+//
+//   // strlen(str_null);
+//
+//  // free(str2);
+//
+//
+////    long double temp = 100e-99;
+////    int counter = 0, flag_plus = 0;
+////    if (temp < 1) {
+////        flag_plus = 0;
+////        while (temp < 1) {
+////            temp*= 10;
+////            ++counter;
+////        }
+////
 //    }
 //    printf("t = %Lf, e = %d\n", temp, counter);
 //    printf("%lf\n", 0.0/0.0);
