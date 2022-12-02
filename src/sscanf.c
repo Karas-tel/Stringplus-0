@@ -2,20 +2,6 @@
 
 #include <stdio.h>
 
-struct Buffer {
-  int b_int;
-  char b_char;
-  short int b_short_int;
-  long int b_long_int;
-  long double b_long_double;
-  float b_float;
-  double b_double;
-
-  unsigned int b_u_int;
-  unsigned short int b_u_short_int;
-  unsigned long int b_u_long_int;
-};
-
 _bool is_digit(char c) { return c <= '9' && c >= '0' ? TRUE : FALSE; }
 
 int s21_skip(const char *string, const char *format) {
