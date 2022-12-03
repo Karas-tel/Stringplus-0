@@ -644,16 +644,10 @@ void supp_d(flags* flags, va_list param, char** str, int* counter) {
 }
 
 void type_conversion_u( unsigned long long  int * val, flags* flags) {
-    if (flags->h && (*val > 65535 || *val < 0)) {
-        if (*val > 0) {
-            while (*val > 65535 || *val < 0) {
+    if (flags->h && (*val > 65535)) {
+            while (*val > 65535) {
                 *val -= 65536;
             }
-        } else {
-            while (*val > 65535 || *val < 0) {
-                *val += 65536;
-            }
-        }
     }
 }
 
