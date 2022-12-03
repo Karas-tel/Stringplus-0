@@ -45,6 +45,9 @@ struct Buffer {
   unsigned int b_u_int;
   unsigned short int b_u_short_int;
   unsigned long int b_u_long_int;
+
+  _bool good_read;
+  int counter;
 };
 
 int s21_sscanf(const char *string, const char *format, ...);
@@ -55,10 +58,14 @@ int skip_space(const char *str);
 
 int read_double(const char *string, struct Pattern patt, long double *d);
 int read_char(const char *string, char *c);
-int read_int(const char *string, struct Pattern patt, long int *i);
-int read_u_int8(const char *string, struct Pattern patt, unsigned long int *i);
-int read_u_int10(const char *string, struct Pattern patt, unsigned long int *i);
-int read_u_int16(const char *string, struct Pattern patt, unsigned long int *i);
+int read_int(const char *string, struct Pattern patt, struct Buffer *buff,
+             long int *i);
+int read_u_int8(const char *string, struct Pattern patt, struct Buffer *buff,
+                unsigned long int *i);
+int read_u_int10(const char *string, struct Pattern patt, struct Buffer *buff,
+                 unsigned long int *i);
+int read_u_int16(const char *string, struct Pattern patt, struct Buffer *buff,
+                 unsigned long int *i);
 int read_string(const char *string, struct Pattern patt, struct Buffer *buff);
 
 int get_pattern(const char *format, struct Pattern *patt);

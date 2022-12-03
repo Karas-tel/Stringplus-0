@@ -42,5 +42,5 @@ git:
 	git add *.h
 	#git add *.sh
 	git add Makefile
-	git commit -m "read_int_without_width"
+	git commit -m "l L h d o x u"
 	git push origin developShelacor

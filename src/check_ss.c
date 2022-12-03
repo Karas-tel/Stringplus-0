@@ -1209,22 +1209,18 @@ Suite *lib_suite(void) {
   tcase_add_test(tc1_1, sscanf_test_l);
   tcase_add_test(tc1_1, sscanf_test_L);
   tcase_add_test(tc1_1, sscanf_test_h);
-  tcase_add_test(tc1_1, sscanf_test_n);
+  tcase_add_test(tc1_1, sscanf_test_n);  //
   tcase_add_test(tc1_1, sscanf_test_d);
-  tcase_add_test(tc1_1, sscanf_test_i);
-  // tcase_add_test(tc1_1, sscanf_test_c);
-  tcase_add_test(tc1_1, sscanf_test_e);
-  // tcase_add_test(tc1_1, sscanf_test_E);
-  tcase_add_test(tc1_1, sscanf_test_f);
+  tcase_add_test(tc1_1, sscanf_test_i);  //
+  tcase_add_test(tc1_1, sscanf_test_e);  //
+  tcase_add_test(tc1_1, sscanf_test_f);  //
   tcase_add_test(tc1_1, sscanf_test_o);
   tcase_add_test(tc1_1, sscanf_test_x);
-  // tcase_add_test(tc1_1, sscanf_test_X);
   tcase_add_test(tc1_1, sscanf_test_u);
-  tcase_add_test(tc1_1, sscanf_test_s);
-  tcase_add_test(tc1_1, sscanf_test_p);
-  tcase_add_test(tc1_1, sscanf_test_proc);
-  // tcase_add_test(tc1_1, sscanf_test_g);
-  tcase_add_test(tc1_1, sscanf_test_all);
+  tcase_add_test(tc1_1, sscanf_test_s);     //
+  tcase_add_test(tc1_1, sscanf_test_p);     //
+  tcase_add_test(tc1_1, sscanf_test_proc);  //
+  tcase_add_test(tc1_1, sscanf_test_all);   //
 
   return s;
 }

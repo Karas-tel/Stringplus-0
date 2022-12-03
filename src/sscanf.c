@@ -34,6 +34,15 @@ int skip_space(const char *str) {
   return count;
 }
 
+int len(const char *str) {
+  int count = 0;
+  while (*str != '\0') {
+    count++;
+    str++;
+  }
+  return count;
+}
+
 void print_pattern(struct Pattern patt) {
   printf("record: %s\n", patt.recording == TRUE ? "TRUE" : "FALSE");
   printf("width: %d\n", patt.width);
@@ -235,10 +244,13 @@ int get_pattern(const char *format, struct Pattern *patt) {
 }
 
 int s21_sscanf(const char *string, const char *format, ...) {
-  va_list scanf_arg;
-  va_start(scanf_arg, format);
-  int scanf_argc = va_s21_sscanf(string, format, scanf_arg);
-  va_end(scanf_arg);
+  int scanf_argc = -1;
+  if (len(string) != skip_space(string)) {
+    va_list scanf_arg;
+    va_start(scanf_arg, format);
+    scanf_argc = va_s21_sscanf(string, format, scanf_arg);
+    va_end(scanf_arg);
+  }
   return scanf_argc;
 }
 
@@ -255,7 +267,8 @@ int read_char(const char *string, char *c) {
   return displacement;
 }
 
-int read_int(const char *string, struct Pattern patt, long int *i) {
+int read_int(const char *string, struct Pattern patt, struct Buffer *buff,
+             long int *i) {
   int displacement = 0;
   int width = 0;
   char c = *string;
@@ -272,6 +285,7 @@ int read_int(const char *string, struct Pattern patt, long int *i) {
   *i = 0;
   while ((c = *string) <= '9' && c >= '0' &&
          (patt.width > width || width_flag == TRUE)) {
+    buff->good_read = TRUE;
     displacement++;
     string++;
     width++;
@@ -281,7 +295,8 @@ int read_int(const char *string, struct Pattern patt, long int *i) {
   return displacement;
 }
 
-int read_u_int8(const char *string, struct Pattern patt, unsigned long int *i) {
+int read_u_int8(const char *string, struct Pattern patt, struct Buffer *buff,
+                unsigned long int *i) {
   int displacement = 0;
   char c = *string;
   int width = 0;
@@ -301,13 +316,14 @@ int read_u_int8(const char *string, struct Pattern patt, unsigned long int *i) {
     displacement++;
     string++;
     width++;
+    buff->good_read = TRUE;
     *i = c - '0' + *i * 8;
   }
   if (flag == FALSE) *i *= -1;
   return displacement;
 }
 
-int read_u_int10(const char *string, struct Pattern patt,
+int read_u_int10(const char *string, struct Pattern patt, struct Buffer *buff,
                  unsigned long int *i) {
   int displacement = 0;
   char c = *string;
@@ -328,13 +344,14 @@ int read_u_int10(const char *string, struct Pattern patt,
     displacement++;
     string++;
     width++;
+    buff->good_read = TRUE;
     *i = c - '0' + *i * 10;
   }
   if (flag == FALSE) *i *= -1;
   return displacement;
 }
 
-int read_u_int16(const char *string, struct Pattern patt,
+int read_u_int16(const char *string, struct Pattern patt, struct Buffer *buff,
                  unsigned long int *i) {
   int displacement = -1;
   int k = 0;
@@ -352,7 +369,7 @@ int read_u_int16(const char *string, struct Pattern patt,
   }
   if (*string == '0' && (*(string + 1) == 'x' || *(string + 1) == 'X') &&
       (patt.width > width || width_flag == TRUE)) {
-    if (patt.width - width > 1) {
+    if (width_flag == TRUE || patt.width - width > 1) {
       string += 2;
       displacement += 2;
       width += 2;
@@ -361,9 +378,11 @@ int read_u_int16(const char *string, struct Pattern patt,
       displacement++;
       width++;
     }
+    buff->good_read = TRUE;
   }
   *i = 0;
   while (flag == TRUE && (patt.width > width || width_flag == TRUE)) {
+    buff->good_read = TRUE;
     displacement++;
     c = *string++;
     width++;
@@ -417,17 +436,17 @@ int read_string(const char *string, struct Pattern patt, struct Buffer *buff) {
       switch (patt.size_var) {
         case L_SIZE:
           long int li;
-          displacement = read_int(string, patt, &li);
+          displacement = read_int(string, patt, buff, &li);
           buff->b_long_int = li;
           break;
         case H_SIZE:
           long int si;
-          displacement = read_int(string, patt, &si);
+          displacement = read_int(string, patt, buff, &si);
           buff->b_short_int = si;
           break;
         case NO_SIZE:
           long int i;
-          displacement = read_int(string, patt, &i);
+          displacement = read_int(string, patt, buff, &i);
           buff->b_int = i;
           break;
         default:
@@ -462,17 +481,17 @@ int read_string(const char *string, struct Pattern patt, struct Buffer *buff) {
       switch (patt.size_var) {
         case L_SIZE:
           unsigned long int li;
-          displacement = read_u_int8(string, patt, &li);
+          displacement = read_u_int8(string, patt, buff, &li);
           buff->b_u_long_int = li;
           break;
         case H_SIZE:
           unsigned long int si;
-          displacement = read_u_int8(string, patt, &si);
+          displacement = read_u_int8(string, patt, buff, &si);
           buff->b_u_short_int = si;
           break;
         case NO_SIZE:
           unsigned long int i;
-          displacement = read_u_int8(string, patt, &i);
+          displacement = read_u_int8(string, patt, buff, &i);
           buff->b_u_int = i;
           break;
         default:
@@ -483,17 +502,17 @@ int read_string(const char *string, struct Pattern patt, struct Buffer *buff) {
       switch (patt.size_var) {
         case L_SIZE:
           unsigned long int li;
-          displacement = read_u_int10(string, patt, &li);
+          displacement = read_u_int10(string, patt, buff, &li);
           buff->b_u_long_int = li;
           break;
         case H_SIZE:
           unsigned long int si;
-          displacement = read_u_int10(string, patt, &si);
+          displacement = read_u_int10(string, patt, buff, &si);
           buff->b_u_short_int = si;
           break;
         case NO_SIZE:
           unsigned long int i;
-          displacement = read_u_int10(string, patt, &i);
+          displacement = read_u_int10(string, patt, buff, &i);
           buff->b_u_int = i;
           break;
         default:
@@ -505,17 +524,17 @@ int read_string(const char *string, struct Pattern patt, struct Buffer *buff) {
       switch (patt.size_var) {
         case L_SIZE:
           unsigned long int li;
-          displacement = read_u_int16(string, patt, &li);
+          displacement = read_u_int16(string, patt, buff, &li);
           buff->b_u_long_int = li;
           break;
         case H_SIZE:
           unsigned long int si;
-          displacement = read_u_int16(string, patt, &si);
+          displacement = read_u_int16(string, patt, buff, &si);
           buff->b_u_short_int = si;
           break;
         case NO_SIZE:
           unsigned long int i;
-          displacement = read_u_int16(string, patt, &i);
+          displacement = read_u_int16(string, patt, buff, &i);
           buff->b_u_int = i;
           break;
         default:
@@ -529,11 +548,13 @@ int read_string(const char *string, struct Pattern patt, struct Buffer *buff) {
 }
 
 int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
-  int counter = 0;
+  // int counter = 0;
   int form_diss = 0;
   int str_diss = 0;
   struct Pattern patt;
   struct Buffer buff;
+  buff.good_read = FALSE;
+  buff.counter = 0;
   int form_diss_global = 0;
   int str_diss_global = 0;
   s21_skip(string, format, &str_diss_global, &form_diss_global);
@@ -545,26 +566,36 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
     s21_skip(string + str_diss_global, format + form_diss_global,
              &str_diss_global, &form_diss_global);
     if (patt.recording == TRUE) {
-      counter++;
+      // counter++;
       switch (patt.spec) {
         case C_SPEC:
           char *c = (char *)va_arg(scanf_arg, char *);
           *c = buff.b_char;
+          buff.counter++;
           break;
         case D_SPEC:
         case I_SPEC:
           switch (patt.size_var) {
             case L_SIZE:
               long int *li = (long int *)va_arg(scanf_arg, long int *);
-              *li = buff.b_long_int;
+              if (buff.good_read == TRUE) {
+                *li = buff.b_long_int;
+                buff.counter++;
+              }
               break;
             case H_SIZE:
               short int *si = (short int *)va_arg(scanf_arg, short int *);
-              *si = buff.b_short_int;
+              if (buff.good_read == TRUE) {
+                *si = buff.b_short_int;
+                buff.counter++;
+              }
               break;
             case NO_SIZE:
               int *i = (int *)va_arg(scanf_arg, int *);
-              *i = buff.b_int;
+              if (buff.good_read == TRUE) {
+                *i = buff.b_int;
+                buff.counter++;
+              }
               break;
             default:
               break;
@@ -579,14 +610,17 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
             case L_SIZE:
               double *d = (double *)va_arg(scanf_arg, double *);
               *d = buff.b_double;
+              buff.counter++;
               break;
             case L_BIG_SIZE:
               long double *ld = (long double *)va_arg(scanf_arg, long double *);
               *ld = buff.b_long_double;
+              buff.counter++;
               break;
             case NO_SIZE:
               float *f = (float *)va_arg(scanf_arg, float *);
               *f = buff.b_float;
+              buff.counter++;
               break;
             default:
               break;
@@ -600,17 +634,29 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
             case L_SIZE:
               unsigned long int *li =
                   (unsigned long int *)va_arg(scanf_arg, unsigned long int *);
-              *li = buff.b_u_long_int;
+              if (buff.good_read == TRUE) {
+                *li = buff.b_u_long_int;
+                buff.good_read = FALSE;
+                buff.counter++;
+              }
               break;
             case H_SIZE:
               unsigned short int *si =
                   (unsigned short int *)va_arg(scanf_arg, unsigned short int *);
-              *si = buff.b_u_short_int;
+              if (buff.good_read == TRUE) {
+                *si = buff.b_u_short_int;
+                buff.good_read = FALSE;
+                buff.counter++;
+              }
               break;
             case NO_SIZE:
               unsigned int *i =
                   (unsigned int *)va_arg(scanf_arg, unsigned int *);
-              *i = buff.b_u_int;
+              if (buff.good_read == TRUE) {
+                *i = buff.b_u_int;
+                buff.good_read = FALSE;
+                buff.counter++;
+              }
               break;
             default:
               break;
@@ -622,33 +668,36 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
     }
   }
   va_end(scanf_arg);
-  return counter;
+  return buff.counter;
 }
 
-int main(void) {
-  // int age = 0, wei = 0;
-  // double lf = 9.9;
-  // long double llf = 9.9;
-  // float f = 9.9;
-  // float ff = 9.9;
-  // char c = 't';
-  int a, b, c = 3, d, i;
-  int count =
-      s21_sscanf("Age: -2 Age:011 Age:\n11 Age:abcdef Age:11",
-                 "Age:%d Age: %o Age:\t%*u Age:%x Age:%X", &a, &b, &d, &i);
-  printf("%d %d %d %d %d count %d\n", a, b, c, d, i, count);
-  // struct Pattern patt;
-  // // print_pattern(patt);
-  // const char *str = "%l%";
+// int main(void) {
+//   // int age = 0, wei = 0;
+//   // double lf = 9.9;
+//   // long double llf = 9.9;
+//   // float f = 9.9;
+//   // float ff = 9.9;
+//   // char c = 't';
+//   int a, b, c = 3, d, i;
+//   int count =
+//       s21_sscanf("Age: -2 Age:011 Age:\n11 Age:abcdef Age:11",
+//                  "Age:%d Age: %o Age:\t%*u Age:%x Age:%X", &a, &b, &d, &i);
+//   printf("%d %d %d %d %d count %d\n", a, b, c, d, i, count);
+//   // struct Pattern patt;
+//   // // print_pattern(patt);
+//   // char str[20];
 
-  // get_pattern(str, &patt);
-  // print_pattern(patt);
-  // while (*str != '\0') {
-  //   printf("%c", *str++);
-  // }
-  int x1, x2;
-  sscanf("0x1234567890123456", "%x", &x1);
-  s21_sscanf("0x1234567890123456", "%x", &x2);
-  printf("%x %x\n", x1, x2);
-  return 0;
-}
+//   // get_pattern(str, &patt);
+//   // print_pattern(patt);
+//   // while (*str != '\0') {
+//   //   printf("%c", *str++);
+//   // }
+//   unsigned int x1 = 5, x2 = 6;
+
+//   a = sscanf("10 123", "%*d %x", &x1);
+//   b = s21_sscanf("10 123", "%*d %x", &x2);
+//   // a = sscanf("", "%x", &x1);
+//   // b = s21_sscanf("", "%x", &x2);
+//   printf("%d %d %d %d\n", x1, x2, a, b);
+//   return 0;
+// }
