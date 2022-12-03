@@ -304,7 +304,7 @@ void *trim(const char *src, const char *trim_chars) {
         }
         // printf("lb = %zu  rb = %zu", left_bound, right_bound);
         
-        str_cp = calloc(right_bound - left_bound + 1, sizeof(char));
+        str_cp = calloc(right_bound - left_bound + 2, sizeof(char));
         if (str_cp) {
             int i_temp = 0;
             if (str_cp) {
