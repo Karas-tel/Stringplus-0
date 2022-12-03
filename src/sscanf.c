@@ -575,6 +575,7 @@ int read_string(const char *string, struct Pattern patt, struct Buffer *buff) {
       buff->b_u_long_int = i;
       break;
     case N_SPEC:
+
       break;
     case PERC_SPEC:
       displacement = read_percent(string);
@@ -598,8 +599,10 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
   int str_diss_global = 0;
   s21_skip(string, format, &str_diss_global, &form_diss_global);
 
-  while ((form_diss = get_pattern(format + form_diss_global, &patt)) > 0 &&
-         (str_diss = read_string(string + str_diss_global, patt, &buff)) > 0) {
+  while (
+      (form_diss = get_pattern(format + form_diss_global, &patt)) > 0 &&
+      (((str_diss = read_string(string + str_diss_global, patt, &buff)) > 0) ||
+       (patt.spec == N_SPEC))) {
     form_diss_global += form_diss;
     str_diss_global += str_diss;
     s21_skip(string + str_diss_global, format + form_diss_global,
@@ -722,6 +725,25 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
           }
           break;
         case N_SPEC:
+          switch (patt.size_var) {
+            case L_SIZE:
+              unsigned long int *li =
+                  (unsigned long int *)va_arg(scanf_arg, unsigned long int *);
+              *li = str_diss_global;
+              break;
+            case H_SIZE:
+              unsigned short int *si =
+                  (unsigned short int *)va_arg(scanf_arg, unsigned short int *);
+              *si = str_diss_global;
+              break;
+            case NO_SIZE:
+              unsigned int *i =
+                  (unsigned int *)va_arg(scanf_arg, unsigned int *);
+              *i = str_diss_global;
+              break;
+            default:
+              break;
+          }
           break;
         case PERC_SPEC:
           break;
@@ -738,53 +760,6 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
 }
 
 // int main(void) {
-//   int r1 = 0, r2 = 0;
-//   void *p1 = 0, *p2 = 0;
-
-//   // r1 = sscanf("0x123", "%4p", &p1);
-//   // r2 = s21_sscanf("0x123", "%4p", &p2);
-//   // printf("%p %p\n", p1, p2);
-//   // printf("%d %d\n", r1, r2);
-
-//   // r1 = sscanf("0xz123", "%4p", &p1);
-//   // r2 = s21_sscanf("0xz123", "%4p", &p2);
-//   // printf("%p %p\n", p1, p2);
-//   // printf("%d %d\n", r1, r2);
-
-//   // r1 = sscanf("0zx123", "%4p", &p1);
-//   // r2 = s21_sscanf("0zx123", "%4p", &p2);
-//   // printf("%p %p\n", p1, p2);
-//   // printf("%d %d\n", r1, r2);
-
-//   // r1 = sscanf("z0x123", "%4p", &p1);
-//   // r2 = s21_sscanf("z0x123", "%4p", &p2);
-//   // printf("%p %p\n", p1, p2);
-//   // printf("%d %d\n", r1, r2);
-
-//   // r1 = sscanf("-z0x123", "%4p", &p1);
-//   // r2 = s21_sscanf("-z0x123", "%4p", &p2);
-//   // printf("%p %p\n", p1, p2);
-//   // printf("%d %d\n", r1, r2);
-
-//   r1 = sscanf("-0x123", "%4p", &p1);
-//   r2 = s21_sscanf("-0x123", "%4p", &p2);
-//   printf("%p %p\n", p1, p2);
-//   printf("%d %d\n", r1, r2);
-
-//   // r1 = sscanf("123", "%4p", &p1);
-//   // r2 = s21_sscanf("123", "%4p", &p2);
-//   // printf("%p %p\n", p1, p2);
-//   // printf("%d %d\n", r1, r2);
-
-//   // r1 = sscanf("0x12345", "%p", &p1);
-//   // r2 = s21_sscanf("0x12345", "%p", &p2);
-//   // printf("%p %p\n", p1, p2);
-//   // printf("%d %d\n", r1, r2);
-
-//   // r1 = sscanf("123.456", "%p", &p1);
-//   // r2 = s21_sscanf("123.456", "%p", &p2);
-//   // printf("%p %p\n", p1, p2);
-//   // printf("%d %d\n", r1, r2);
 
 //   return 0;
 // }
