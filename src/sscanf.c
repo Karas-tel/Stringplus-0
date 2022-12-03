@@ -319,6 +319,70 @@ int read_int(const char *string, struct Pattern patt, struct Buffer *buff,
   return displacement;
 }
 
+int read_i_int(const char *string, struct Pattern patt, struct Buffer *buff) {
+  int displacement = 0;
+  unsigned long int answ = 0;
+  char c = *string;
+  int width = 0;
+  _bool flag_z = TRUE, width_flag = FALSE;
+  if (patt.width == 0) width_flag = TRUE;
+  if (c == '-') flag_z = FALSE;
+  if (c == '-' || c == '+') {
+    if (patt.width > width || width_flag == TRUE) {
+      string++;
+      displacement++;
+      width++;
+    }
+  }
+  if (*string == '0' && (*(string + 1) == 'x' || *(string + 1) == 'X') &&
+      (patt.width > width || width_flag == TRUE)) {
+    if (width_flag == TRUE || patt.width - width > 1) {
+      string += 2;
+      displacement += 2;
+      width += 2;
+    } else {
+      string++;
+      displacement++;
+      width++;
+    }
+    buff->good_read = TRUE;
+    if (patt.width != 0) {
+      patt.width -= width;
+      if (patt.width > 0)
+        displacement += read_u_int16(string, patt, buff, &answ);
+    } else {
+      displacement += read_u_int16(string, patt, buff, &answ);
+    }
+
+  } else if ((*string == '0') && (patt.width > width || width_flag == TRUE)) {
+    string++;
+    displacement++;
+    width++;
+    buff->good_read = TRUE;
+    if (patt.width != 0) {
+      patt.width -= width;
+      if (patt.width > 0)
+        displacement += read_u_int8(string, patt, buff, &answ);
+    } else {
+      displacement += read_u_int8(string, patt, buff, &answ);
+    }
+    // displacement += read_u_int8(string, patt, buff, &answ);
+  } else {
+    if (patt.width != 0) {
+      patt.width -= width;
+      if (patt.width > 0)
+        displacement += read_u_int10(string, patt, buff, &answ);
+    } else {
+      displacement += read_u_int10(string, patt, buff, &answ);
+    }
+    // displacement += read_u_int10(string, patt, buff, &answ);
+  }
+
+  if (flag_z == FALSE) answ *= -1;
+  buff->b_long_int = answ;
+  return displacement;
+}
+
 int read_u_int8(const char *string, struct Pattern patt, struct Buffer *buff,
                 unsigned long int *i) {
   int displacement = 0;
@@ -377,7 +441,7 @@ int read_u_int10(const char *string, struct Pattern patt, struct Buffer *buff,
 
 int read_u_int16(const char *string, struct Pattern patt, struct Buffer *buff,
                  unsigned long int *i) {
-  int displacement = -1;
+  int displacement = 0;
   int k = 0;
   char c = *string;
   int width = 0;
@@ -406,9 +470,7 @@ int read_u_int16(const char *string, struct Pattern patt, struct Buffer *buff,
   }
   *i = 0;
   while (flag == TRUE && (patt.width > width || width_flag == TRUE)) {
-    displacement++;
-    c = *string++;
-    width++;
+    c = *string;
     switch (c) {
       case 'A':
       case 'a':
@@ -442,6 +504,9 @@ int read_u_int16(const char *string, struct Pattern patt, struct Buffer *buff,
         }
     }
     if (flag == TRUE) {
+      displacement++;
+      string++;
+      width++;
       *i = k + *i * 16;
       buff->good_read = TRUE;
     }
@@ -460,6 +525,19 @@ int read_string(const char *string, struct Pattern patt, struct Buffer *buff) {
       break;
     case S_SPEC:
       displacement = read_str(string, patt, buff);
+      break;
+    case I_SPEC:
+      displacement = read_i_int(string, patt, buff);
+      switch (patt.size_var) {
+        case H_SIZE:
+          buff->b_short_int = buff->b_long_int;
+          break;
+        case NO_SIZE:
+          buff->b_int = buff->b_long_int;
+          break;
+        default:
+          break;
+      }
       break;
     case D_SPEC:
       switch (patt.size_var) {
@@ -760,6 +838,15 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
 }
 
 // int main(void) {
+//   int r1 = 0, r2 = 0;
+//   int i1 = -1, i2 = -1, i3 = 0, i4 = 0;  // i5 = 0, i6 = 0;
+//   // short int i7, i8, i9, i10, i11, i12;
+//   //  long int i20, i21, i22, i23, i24, i25;
 
+//   r1 = sscanf("0x9 -0xa2      0xBa1", "%*i%5i%i", &i1, &i3);
+//   r2 = s21_sscanf("0x9 -0xa2      0xBa1", "%*i%5i%i", &i2, &i4);
+//   printf("%d %d\n", i1, i2);
+//   printf("%d %d\n", i3, i4);
+//   printf("%d %d\n", r1, r2);
 //   return 0;
 // }

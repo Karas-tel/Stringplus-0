@@ -60,6 +60,7 @@ int skip_space(const char *str);
 int read_double(const char *string, struct Pattern patt, long double *d);
 int read_char(const char *string, char *c);
 int read_str(const char *string, struct Pattern patt, struct Buffer *buff);
+int read_i_int(const char *string, struct Pattern patt, struct Buffer *buff);
 int read_int(const char *string, struct Pattern patt, struct Buffer *buff,
              long int *i);
 int read_u_int8(const char *string, struct Pattern patt, struct Buffer *buff,
