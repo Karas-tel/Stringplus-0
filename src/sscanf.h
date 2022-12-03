@@ -19,7 +19,7 @@ typedef enum {
   X_BIG_SPEC,
   P_SPEC,
   N_SPEC,
-  DEF_SPEC,  // %
+  DEF_SPEC,
   ERROR_SPEC
 } specifier;
 

@@ -463,17 +463,19 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
   struct Buffer buff;
 
   int skip = s21_skip(string, format);
-  int form_diss_global = skip;  // + skip_space(format);
-  int str_diss_global = skip;   // + skip_space(string);
+  int form_diss_global = skip + skip_space(format + skip);
+  int str_diss_global = skip + skip_space(string + skip);
 
   while ((form_diss = get_pattern(format + form_diss_global, &patt)) > 0 &&
          (str_diss = read_string(string + str_diss_global, patt, &buff)) > 0) {
     counter++;
-    form_diss_global += form_diss;  // + skip_space(format);
-    str_diss_global += str_diss;    // + skip_space(string);
+    form_diss_global +=
+        form_diss + skip_space(format + form_diss_global + form_diss);
+    str_diss_global +=
+        str_diss + skip_space(string + str_diss_global + str_diss);
     skip = s21_skip(string + str_diss_global, format + form_diss_global);
-    form_diss_global += skip;  // + skip_space(format);
-    str_diss_global += skip;   // + skip_space(string);
+    form_diss_global += skip + skip_space(format + form_diss_global);
+    str_diss_global += skip + skip_space(string + str_diss_global);
     if (patt.recording == TRUE) {
       switch (patt.spec) {
         case C_SPEC:
