@@ -304,6 +304,7 @@ START_TEST(test_trim) {
     char* buff2 = " '2";
     char* buff3 = trim(buff, buff2);
     ck_assert_str_eq("asdfADASSA5522 ASasdaspqp11221", buff3);
+    free(buff3);
     buff = "                   ";
     buff2 = " ";
     buff3 = trim(buff, buff2);
