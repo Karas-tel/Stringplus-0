@@ -104,10 +104,30 @@ START_TEST(test_printf_d) {
     s = sprintf(buff,"%+.5d %+6.5d %+.5d %+6.5d %-2d %-2.5d %-4.d", 10, 10, -10, -10, 1, 10, 0);
     ck_assert_int_eq(f, s);
     ck_assert_str_eq(buff, buff2);
-    ck_assert_int_eq(f, s);
-    ck_assert_str_eq(buff, buff2);
     f = s21_sprintf(buff2, "blblbblblc%c%+*.*d", '$', 2, 5, 10);
     s = sprintf(buff, "blblbblblc%c%+*.*d", '$', 2, 5, 10);
+    ck_assert_int_eq(f, s);
+    ck_assert_str_eq(buff, buff2);
+    f = s21_sprintf(buff2, "%hd %hd", 32768, -10000000);
+    s = sprintf(buff, "%hd %hd", (short) 32768, (short)-10000000);
+    ck_assert_int_eq(f, s);
+    ck_assert_str_eq(buff, buff2);
+    f = s21_sprintf(buff2, "%d %d", 2147483648, -21474836480);
+    s = sprintf(buff, "%d %d", (int)2147483648, (int)-21474836480);
+    ck_assert_int_eq(f, s);
+    ck_assert_str_eq(buff, buff2);
+    f = s21_sprintf(buff2, "%d %d", 2147483648, -21474836480);
+    s = sprintf(buff, "%d %d", (int)2147483648, (int)-21474836480);
+    ck_assert_int_eq(f, s);
+    ck_assert_str_eq(buff, buff2);
+    f = s21_sprintf(buff2, "%hu %hu", 65536, -65536);
+    s = sprintf(buff, "%hu %hu", (unsigned short)65536, (unsigned short)-65536);
+    ck_assert_int_eq(f, s);
+    ck_assert_str_eq(buff, buff2);
+//    f = s21_sprintf(buff2, "%lu", (long unsigned int) 18446744073709551615);
+//    s = sprintf(buff, "%lu", (long unsigned int) 18446744073709551615);
+//    ck_assert_int_eq(f, s);
+//    ck_assert_str_eq(buff, buff2);
 } END_TEST
 
 START_TEST(test_printf_f) {
@@ -145,7 +165,7 @@ START_TEST(test_printf_e) {
     int s2 = sprintf(buff, "%4.4E %-3.5E %07E %+-.E", 1000.0, -0.0000002, 0.0, 200e+100);
     ck_assert_int_eq(f2, s2);
     ck_assert_str_eq(buff, buff2);
-    
+
    int f3 = s21_sprintf(buff2, "%LE %-E %E % E", (long double)0.0/0.0, 0.0/0.0, -1.0/0.0, 1.0/0.0);
   int s3 = sprintf(buff, "%LE %-E %E % E", (long double)0.0/0.0, 0.0/0.0, -1.0/0.0, 1.0/0.0);
    ck_assert_int_eq(f3, s3);
@@ -257,6 +277,12 @@ START_TEST(test_upper_lower) {
     buff2 = NULL;
     buff3 = to_lower(buff2);
     ck_assert_ptr_null(buff3);
+    buff3 = to_upper("");
+    ck_assert_str_eq("", buff3);
+    free(buff3);
+    buff3 = to_lower("");
+    ck_assert_str_eq("", buff3);
+    free(buff3);
 } END_TEST
 
 START_TEST(test_insert) {
@@ -270,7 +296,7 @@ START_TEST(test_insert) {
     free(buff3);
     buff3 = insert(buff, buff2, 25);
     ck_assert_ptr_null(buff3);
-    
+
 } END_TEST
 
 START_TEST(test_trim) {
@@ -287,7 +313,7 @@ START_TEST(test_trim) {
     buff2 = " ";
     buff3 = trim(buff, buff2);
     ck_assert_ptr_null(buff3);
-    
+
 } END_TEST
 
 Suite* additional_func_suite(void) {
@@ -334,7 +360,7 @@ START_TEST(test_memcmp) {
     buff = "ASDFGHJK1234!@#$/0asd";
     buff1 = "A/0SDFGHJK1234!@#$";
     ck_assert_int_eq(memcmp(buff, buff1, 100), s21_memcmp(buff, buff1, 100));
-    
+
 } END_TEST
 
 START_TEST(test_memcpy) {
@@ -347,7 +373,7 @@ START_TEST(test_memcpy) {
     res1 = memcpy(dest1, src, 100);
     res2 = s21_memcpy(dest2, src, 100);
     ck_assert_str_eq(res1, res2);
-    
+
 } END_TEST
 
 START_TEST(test_memmove) {
@@ -404,10 +430,15 @@ int main() {
 
     char buff[200];
     char buff2[200];
+    s21_sprintf(buff, "%+010.f % .f %+0.f %- 4.5f %-+5.4f ", -10000.0, -1.0, 5.54454545, 5.9999999999, 5.54454545);
+    sprintf(buff2, "%+010.f % .f %+0.f %- 4.5f %-+5.4f ", -10000.0, -1.0, 5.54454545, 5.9999999999, 5.54454545);
+    printf("|%s|\n", buff);
+    printf("|%s|\n", buff2);
+    //printf("%d\n", INT_MAX);
     //double d = 5.0;
 //    int d = 10;
 //    int e;
-    
+
 //    const char* src = "ASDFGHJK1234!@#$";
 //    char* dest = "ASDFGHJK1234!@#$";
 //    memcpy(dest, src, 100);
@@ -490,6 +521,6 @@ int main() {
     }
     if (no_failed == 0)
         printf("TEST OK\n");
-   
+
     return 0;
 }

@@ -12,7 +12,16 @@
 //#include "s21_string.h"
 //#define INT_MAX 2147483647
 //#define LONG_MAX 9223372036854775807
+//#define LONG_MIN -9223372036854775808
 //#define ULONG_MAX 18003372036854775807
+//#define USHRT_MAX 65535
+//#define BUFF_SIZE 512
+//
+//
+//
+////#include "tests_suitcases.h"
+//#include "s21_string.h"
+//
 //#define BUFF_SIZE 512
 //
 //START_TEST(SPRINTFTestLaslhyn22) {
@@ -850,40 +859,40 @@
 //START_TEST(SPRINTFTestLaslhyn188) {
 //    char data[100];
 //    char data1[100];
-//    s21_sprintf(data, "|%1.8f|\n", 324.343);
-//    sprintf(data1, "|%1.8f|\n", 324.343);
+//    s21_sprintf(data, "|%1.19f|\n", 324.343);
+//    sprintf(data1, "|%1.19f|\n", 324.343);
 //    ck_assert_str_eq(data, data1);
 //} END_TEST
 //
 //START_TEST(SPRINTFTestLaslhyn189) {
 //    char data[100];
 //    char data1[100];
-//    s21_sprintf(data, "|%-1.9f|\n", 324.343);
-//    sprintf(data1, "|%-1.9f|\n", 324.343);
+//    s21_sprintf(data, "|%-1.10f|\n", 324.343);
+//    sprintf(data1, "|%-1.10f|\n", 324.343);
 //    ck_assert_str_eq(data, data1);
 //} END_TEST
 //
 //START_TEST(SPRINTFTestLaslhyn190) {
 //    char data[100];
 //    char data1[100];
-//    s21_sprintf(data, "|%-1.9f|\n", -324.343);
-//    sprintf(data1, "|%-1.9f|\n", -324.343);
+//    s21_sprintf(data, "|%-1.10f|\n", -324.343);
+//    sprintf(data1, "|%-1.10f|\n", -324.343);
 //    ck_assert_str_eq(data, data1);
 //} END_TEST
 //
 //START_TEST(SPRINTFTestLaslhyn191) {
 //    char data[100];
 //    char data1[100];
-//    s21_sprintf(data, "|%.9f|\n", -324.343);
-//    sprintf(data1, "|%.9f|\n", -324.343);
+//    s21_sprintf(data, "|%.10f|\n", -324.343);
+//    sprintf(data1, "|%.10f|\n", -324.343);
 //    ck_assert_str_eq(data, data1);
 //} END_TEST
 //
 //START_TEST(SPRINTFTestLaslhyn192) {
 //    char data[100];
 //    char data1[100];
-//    s21_sprintf(data, "|%.9f|\n", 324.343);
-//    sprintf(data1, "|%.9f|\n", 324.343);
+//    s21_sprintf(data, "|%.10f|\n", 324.343);
+//    sprintf(data1, "|%.10f|\n", 324.343);
 //    ck_assert_str_eq(data, data1);
 //} END_TEST
 //
@@ -922,8 +931,8 @@
 //START_TEST(SPRINTFTestLaslhyn197) {
 //    char data[100];
 //    char data1[100];
-//    s21_sprintf(data, "|%10.9f|\n", 324.1123132);
-//    sprintf(data1, "|%10.9f|\n", 324.1123132);
+//    s21_sprintf(data, "|%10.15f|\n", 324.1123132);
+//    sprintf(data1, "|%10.15f|\n", 324.1123132);
 //    ck_assert_str_eq(data, data1);
 //} END_TEST
 //
@@ -948,16 +957,16 @@
 //    //
 //    char data[100];
 //    char data1[100];
-//    s21_sprintf(data, "|%10.9f|\n", 320.3);
-//    sprintf(data1, "|%10.9f|\n", 320.3);
+//    s21_sprintf(data, "|%10.10f|\n", 320.3);
+//    sprintf(data1, "|%10.10f|\n", 320.3);
 //    ck_assert_str_eq(data, data1);
 //} END_TEST
 //
 //START_TEST(SPRINTFTestLaslhyn201) {
 //    char data[100];
 //    char data1[100];
-//    s21_sprintf(data, "|%-10.9f|\n", 320.3);
-//    sprintf(data1, "|%-10.9f|\n", 320.3);
+//    s21_sprintf(data, "|%-10.10f|\n", 320.3);
+//    sprintf(data1, "|%-10.10f|\n", 320.3);
 //    ck_assert_str_eq(data, data1);
 //} END_TEST
 //
@@ -965,16 +974,16 @@
 //    //
 //    char data[100];
 //    char data1[100];
-//    s21_sprintf(data, "|%-10.9f|\n", 320.3);
-//    sprintf(data1, "|%-10.9f|\n", 320.3);
+//    s21_sprintf(data, "|%-10.10f|\n", 320.3);
+//    sprintf(data1, "|%-10.10f|\n", 320.3);
 //    ck_assert_str_eq(data, data1);
 //} END_TEST
 //
 //START_TEST(SPRINTFTestLaslhyn203) {
 //    char data[100];
 //    char data1[100];
-//    s21_sprintf(data, "|%-10.9f|\n", -320.3);
-//    sprintf(data1, "|%-10.9f|\n", -320.3);
+//    s21_sprintf(data, "|%-10.10f|\n", -320.3);
+//    sprintf(data1, "|%-10.10f|\n", -320.3);
 //    ck_assert_str_eq(data, data1);
 //} END_TEST
 //
@@ -1119,7 +1128,13 @@
 //    ck_assert_str_eq(str, str1);
 //} END_TEST
 //
-//
+//START_TEST(SPRINTFTestdogletho68) {
+//    char str[100];
+//    char str1[100];
+//    sprintf(str, "|%20.18u|\n", (unsigned)-345);
+//    s21_sprintf(str1, "|%020.18u|\n", (unsigned)-345);
+//    ck_assert_str_eq(str, str1);
+//} END_TEST
 //
 //START_TEST(SPRINTFTestdogletho69) {
 //    char str[100];
@@ -1365,7 +1380,15 @@
 //    ck_assert_str_eq(data, data1);
 //} END_TEST
 //
-//
+////START_TEST(SPRINTFTestRleonard14) {
+////    char data[3000];
+////    char data1[3000];
+////    wchar_t buf[100] = L"hello";
+////    s21_sprintf(data, "%ls", buf);
+////    sprintf(data1, "%ls", buf);
+////
+////    ck_assert_str_eq(data, data1);
+////} END_TEST
 //// ##########################################
 //START_TEST(s21_sprintf_test_percent) {
 //  char str1[1000];
@@ -2035,6 +2058,16 @@
 //    ck_assert_str_eq(str1, str2);
 //} END_TEST
 //
+//START_TEST(test_sprintf9) {
+//    char str1[BUFF_SIZE];
+//    char str2[BUFF_SIZE];
+//    char format[] = "%li%ld%lu";
+//
+//    ck_assert_int_eq(s21_sprintf(str1, format, 666666666666, 777, 111),
+//                     sprintf(str2, format, 666666666666, 777, 111));
+//
+//    ck_assert_str_eq(str1, str2);
+//} END_TEST
 //
 //START_TEST(test_sprintf10) {
 //    char str1[BUFF_SIZE];
@@ -2461,7 +2494,15 @@
 //  ck_assert_str_eq(result, result_s21);
 //} END_TEST
 //
-//
+//START_TEST(SPRINTF_UNSIGNED_SHORT) {
+//  char result[100] = "";
+//  char result_s21[100] = "";
+//  char format_str[100] = "%hu";
+//  unsigned long int u = USHRT_MAX;
+//  sprintf(result, format_str, u);
+//  s21_sprintf(result_s21, format_str, u);
+//  ck_assert_str_eq(result, result_s21);
+//} END_TEST
 //
 //START_TEST(SPRINTF_UNSIGNED_H) {
 //  char result[100] = "";
@@ -2762,7 +2803,7 @@
 //  free(lib_test_str);
 //} END_TEST
 //
-////START_TEST (s21_sprintf_h) {
+////START_TEST(s21_sprintf_h) {
 ////    char* s21_test_str = (char*)malloc(sizeof(char) * 256);
 ////    char* lib_test_str = (char*)malloc(sizeof(char) * 256);
 ////    short i = 0;
@@ -2775,6 +2816,19 @@
 ////    free(lib_test_str);
 ////} END_TEST
 //
+//START_TEST(s21_sprintf_l) {
+//    char* s21_test_str = (char*)malloc(sizeof(char) * 256);
+//    char* lib_test_str = (char*)malloc(sizeof(char) * 256);
+//    long i = LONG_MAX;
+//    long a = LONG_MIN;
+//    unsigned long b = 4294967295;
+//    int lib_res = sprintf(lib_test_str, "|%li| |%ld| |%lu|", i, a, b);
+//    int s21_res = s21_sprintf(s21_test_str, "|%li| |%ld| |%lu|", i, a, b);
+//    ck_assert_str_eq(s21_test_str, lib_test_str);
+//    ck_assert_int_eq(s21_res, lib_res);
+//    free(s21_test_str);
+//    free(lib_test_str);
+//} END_TEST
 //
 //START_TEST(s21_sprintf_diu_whith_str) {
 //    char* s21_test_str = (char*)malloc(sizeof(char) * 256);
@@ -2828,7 +2882,7 @@
 //  free(lib_test_str);
 //} END_TEST
 //
-//Suite *sprintf_suite() {
+//Suite *suite_sprintf() {
 //    Suite *s25;
 //    TCase *tc1_1;
 //    s25 = suite_create("s21_SPRINTF");
@@ -2969,7 +3023,7 @@
 //    tcase_add_test(tc1_1, SPRINTFTestdogletho54);
 //    tcase_add_test(tc1_1, SPRINTFTestdogletho55);
 //    tcase_add_test(tc1_1, SPRINTFTestdogletho56);
-//
+//    tcase_add_test(tc1_1, SPRINTFTestdogletho68);
 //    tcase_add_test(tc1_1, SPRINTFTestdogletho69);
 //    tcase_add_test(tc1_1, SPRINTFTestdogletho127);
 //    tcase_add_test(tc1_1, SPRINTFTestdogletho128);
@@ -2998,6 +3052,7 @@
 //    tcase_add_test(tc1_1, SPRINTFTestRleonard9);
 //    tcase_add_test(tc1_1, SPRINTFTestRleonard12);
 //    tcase_add_test(tc1_1, SPRINTFTestRleonard13);
+//  //  tcase_add_test(tc1_1, SPRINTFTestRleonard14);
 //    tcase_add_test(tc1_1, s21_sprintf_test_percent);
 //    tcase_add_test(tc1_1, simple_int);
 //    tcase_add_test(tc1_1, precise_int);
@@ -3057,7 +3112,7 @@
 //    tcase_add_test(tc1_1, test_sprintf6);
 //    tcase_add_test(tc1_1, test_sprintf7);
 //    tcase_add_test(tc1_1, test_sprintf8);
-//
+//    tcase_add_test(tc1_1, test_sprintf9);
 //    tcase_add_test(tc1_1, test_sprintf10);
 //    tcase_add_test(tc1_1, test_sprintf11);
 //    tcase_add_test(tc1_1, test_sprintf16);
@@ -3098,7 +3153,7 @@
 //    tcase_add_test(tc1_1, SPRINTF_UNSIGNED);
 //    tcase_add_test(tc1_1, SPRINTF_UNSIGNED_MINUS_DIGIT);
 //    tcase_add_test(tc1_1, SPRINTF_UNSIGNED_LONG);
-//
+//    tcase_add_test(tc1_1, SPRINTF_UNSIGNED_SHORT);
 //    tcase_add_test(tc1_1, SPRINTF_UNSIGNED_MINUS_H);
 //    tcase_add_test(tc1_1, SPRINTF_UNSIGNED_H);
 //    tcase_add_test(tc1_1, SPRINTF_UNSIGNED_SPACE);
@@ -3126,8 +3181,8 @@
 //    tcase_add_test(tc1_1, s21_sprintf_f);
 //    tcase_add_test(tc1_1, s21_sprintf_i);
 //    tcase_add_test(tc1_1, s21_sprintf_s);
-//    //tcase_add_test(tc1_1, s21_sprintf_h);
-//
+//   // tcase_add_test(tc1_1, s21_sprintf_h);
+//    tcase_add_test(tc1_1, s21_sprintf_l);
 //    tcase_add_test(tc1_1, s21_sprintf_star);
 //    tcase_add_test(tc1_1, s21_sprintf_empty);
 //    tcase_add_test(tc1_1, s21_sprintf_diu_whith_str);
@@ -3136,29 +3191,36 @@
 //    return s25;
 //}
 //
+//void run_testcase(Suite *testcase) {
+//    static int counter_testcase = 1;
+//    if (counter_testcase > 1)
+//        counter_testcase++;
+//    SRunner *sr = srunner_create(testcase);
+//    srunner_set_fork_status(sr, CK_NOFORK);
+//    srunner_run_all(sr, CK_NORMAL);
+//    srunner_free(sr);
+//}
 //
+//void run_tests(void) {
+//    Suite *list_cases[] = {
+//    suite_sprintf(),
+//    NULL
+//    };
 //
-//int main(){
-//    char data[3000];
-//    char data1[3000];
-//   // wchar_t buf[100] = L"hello";
-//    s21_sprintf(data, "%f", -0.02);
-//    sprintf(data1, "%.16f", 7.891235551512512321);
-//    printf("orig = %s\n", data1);
-//    printf(" lol = %s\n", data);
-//     int no_failed;
-//      Suite *s;
-//      SRunner *runner;
+//    for (Suite **current_testcase = list_cases; *current_testcase != NULL;
+//        current_testcase++) {
+//        run_testcase(*current_testcase);
+//    }
+//}
 //
-//      s = sprintf_suite();
-//      runner = srunner_create(s);
-//      srunner_set_fork_status(runner, CK_NOFORK);
-//      srunner_run_all(runner, CK_NORMAL);
-//      no_failed = srunner_ntests_failed(runner);
-//      srunner_free(runner);
-//    if (no_failed == 0)
-//        printf("TEST OK\n");
-//    else
-//        printf("SMTH GETS WRONG\n");
+//int main(void) {
+//    run_tests();
+//
+//    char str[100];
+//    char str1[100];
+//    int orig = sprintf(str, "%li%ld%lu", 666666666666, 777, (unsigned long)111);
+//    int my = s21_sprintf(str1, "%li%ld%lu", 666666666666, 777, 111);
+//    printf("|%s| - %d\n",str, orig);
+//    printf("|%s| - %d\n",str1, my);
 //    return 0;
 //}

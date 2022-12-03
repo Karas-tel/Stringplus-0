@@ -47,7 +47,8 @@ void sprint_f (flags* flags, int* counter, int flag_zero, char** str, _string* d
 void sprint_e (flags* flags, int* counter, char** str, _string* data, long double val, int zero_flag, char specifier);
 void sprint_g(flags* flags, int* counter, int flag_zero, char** str, _string* data, long double val, char specifier);
 void get_int_from_char(const char** begin, flags* flags);
-void my_itoa(long long value, _string* result, int base);
+void my_itoa(long int value, _string* result, int base);
+void my_itoa_u(long long unsigned int value, _string* result, int base);
 void read_flags (flags* flags, const char** format);
 void _string_init (_string* data);
 void _vector_init (_vector* data);

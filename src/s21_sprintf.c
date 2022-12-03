@@ -174,6 +174,7 @@ void sprint_d (flags* flags, int* counter, int flag_zero, char** str, _string* d
         *((*str)++) = data->buffer[i];
         ++(*counter);
     }
+   // printf("counter = %d\n", *counter);
 }
 
 void sprint_f (flags* flags, int* counter, int flag_zero, char** str, _string* data) {
@@ -333,9 +334,29 @@ void shuffle_str (_string* data) {
     
 }
 
-void my_itoa(long long value, _string* result, int base) {
+void my_itoa(long int value, _string* result, int base) {
         char* ptr = result->buffer, *ptr1 = result->buffer, tmp_char;
-        long long tmp_value;
+        long int tmp_value;
+        do {
+            tmp_value = value;
+            value /= base;
+            *ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz" [35 + (tmp_value - value * base)];
+            ++result->pos;
+        } while ( value );
+    if (tmp_value < 0) {
+        *ptr++ = '-';
+        ++result->pos;
+    }
+         ptr--;
+        while(ptr1 < ptr) {
+            tmp_char = *ptr;
+            *ptr--= *ptr1;
+            *ptr1++ = tmp_char;
+        }
+    }
+void my_itoa_u(long long unsigned int value, _string* result, int base) {
+        char* ptr = result->buffer, *ptr1 = result->buffer, tmp_char;
+    long long unsigned int tmp_value;
         do {
             tmp_value = value;
             value /= base;
@@ -407,7 +428,7 @@ void apply_width_d (flags* flags, _string* data, int zero_flag, int flag_d_f) {
     }
     for (; data->pos < flags->width;) {
        // printf("hi\n");
-        if (flags->zero)
+        if (flags->zero && flags->acc <= 0)
             data->buffer[data->pos++] = '0';
         else
             data->buffer[data->pos++] = ' ';
@@ -450,9 +471,10 @@ void my_dtos(long double val, _string* data, flags* flags, char specifier) {
             vec.buffer[vec.pos++] = 0;
             for (int i = 0; i < flags->acc; ++i) {
                 float_part *= 10;
-                vec.buffer[vec.pos++] = (int) float_part % 10;
+                vec.buffer[vec.pos++] = (int) float_part;
+                float_part -= vec.buffer[vec.pos - 1];
             }
-            int temp =((int)(float_part * 10)) % 10;
+            int temp =((int)(float_part * 10));
             if (temp >= 5)
                 round_acc(&vec);
             if (vec.buffer[0] == 1)
@@ -578,15 +600,38 @@ void update_acc(long double val, flags* flags, char specifier, char e_or_f, int 
     }
     free(temp.buffer);
 }
-
+void type_conversion_d( long long * val, flags* flags) {
+    if (flags->h && (*val > 32767 || *val < -32767)) {
+        if (*val > 0) {
+            while (*val > 32767 || *val < -32768) {
+                *val -= 65536;
+            }
+        } else {
+            while (*val > 32767 || *val < -32768) {
+                *val += 65536;
+            }
+        }
+    } /*else if (!flags->l && (*val > 2147483647 || *val < -2147483648)) {
+        if (*val > 0) {
+            while (*val > 2147483647 || *val < -2147483648) {
+                *val -= 4294967298;
+            }
+        } else {
+            while (*val > 2147483647 || *val < -2147483648) {
+                *val += 4294967298;
+            }
+        }
+    }*/
+}
 
 void supp_d(flags* flags, va_list param, char** str, int* counter) {
     long long val = 0;
     int flag_zero;     //=1 если val > 0, = 0 если val = 0, = -1 если val < 0
     if (flags->l)
-        val = (long long) va_arg(param, long);
+        val =  va_arg(param, long long);
      else
         val = (long long) va_arg(param, int);
+    type_conversion_d(&val, flags);
     if (val > 0)
         flag_zero = 1;
     else if (val == 0)
@@ -600,13 +645,29 @@ void supp_d(flags* flags, va_list param, char** str, int* counter) {
     flag_init(flags);
     free(data.buffer);
 }
+
+void type_conversion_u( unsigned long long  int * val, flags* flags) {
+    if (flags->h && (*val > 65535 || *val < 0)) {
+        if (*val > 0) {
+            while (*val > 65535 || *val < 0) {
+                *val -= 65536;
+            }
+        } else {
+            while (*val > 65535 || *val < 0) {
+                *val += 65536;
+            }
+        }
+    }
+}
+
 void supp_u(flags* flags, va_list param, char** str, int* counter) {
-    long long val = 0;
+    unsigned long long int val = 0;
     int flag_zero;     //=1 если val > 0, = 0 если val = 0, = -1 если val < 0
     if (flags->l)
-        val = (long long) va_arg(param, long unsigned int);
+        val =  va_arg(param, unsigned long long int);
      else
-        val = (long long) va_arg(param, unsigned int);
+        val =  va_arg(param, unsigned int);
+    type_conversion_u(&val, flags);
     if (val > 0)
         flag_zero = 1;
     else
@@ -615,7 +676,7 @@ void supp_u(flags* flags, va_list param, char** str, int* counter) {
     flags->sign = 0;
     _string data;
     _string_init(&data);
-    my_itoa(val, &data, 10);
+    my_itoa_u(val, &data, 10);
     sprint_d(flags, counter, flag_zero, str, &data);
     flag_init(flags);
     free(data.buffer);
