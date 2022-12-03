@@ -19,7 +19,7 @@ typedef enum {
   X_BIG_SPEC,
   P_SPEC,
   N_SPEC,
-  DEF_SPEC,
+  PERC_SPEC,
   ERROR_SPEC
 } specifier;
 
@@ -36,6 +36,7 @@ struct Pattern {
 struct Buffer {
   int b_int;
   char b_char;
+  char *b_string;
   short int b_short_int;
   long int b_long_int;
   long double b_long_double;
@@ -58,6 +59,7 @@ int skip_space(const char *str);
 
 int read_double(const char *string, struct Pattern patt, long double *d);
 int read_char(const char *string, char *c);
+int read_str(const char *string, struct Pattern patt, struct Buffer *buff);
 int read_int(const char *string, struct Pattern patt, struct Buffer *buff,
              long int *i);
 int read_u_int8(const char *string, struct Pattern patt, struct Buffer *buff,

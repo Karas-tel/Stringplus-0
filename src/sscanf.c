@@ -1,12 +1,12 @@
 #include "sscanf.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 _bool is_digit(char c) { return c <= '9' && c >= '0' ? TRUE : FALSE; }
 
 int s21_skip(const char *string, const char *format, int *str_diss,
              int *form_diss) {
-  // int count = 0;
   int skip = 0;
   if (*string != *format) {
     skip = skip_space(format);
@@ -16,7 +16,6 @@ int s21_skip(const char *string, const char *format, int *str_diss,
   while (*string == *format) {
     string++;
     format++;
-    // count++;
     (*form_diss)++;
     (*str_diss)++;
   }
@@ -111,7 +110,7 @@ void print_pattern(struct Pattern patt) {
     case N_SPEC:
       printf("n\n");
       break;
-    case DEF_SPEC:
+    case PERC_SPEC:
       printf("%%\n");
       break;
     case ERROR_SPEC:
@@ -125,13 +124,11 @@ void print_pattern(struct Pattern patt) {
 
 int get_pattern(const char *format, struct Pattern *patt) {
   int displacement = 0;
-  // displacement += skip_space(format);
-  // format += displacement;
   if (*format == '%') {
     format++;
     displacement++;
     if (*format == '%') {
-      patt->spec = DEF_SPEC;
+      patt->spec = PERC_SPEC;
       displacement++;
     } else {
       if (*format == '*') {
@@ -261,9 +258,35 @@ int read_double(const char *string, struct Pattern patt, long double *d) {
   return displacement;
 }
 
+int read_str(const char *string, struct Pattern patt, struct Buffer *buff) {
+  _bool width_flag = FALSE;
+  if (patt.width == 0) width_flag = TRUE;
+  int size = patt.width != 0 ? patt.width : 100;
+  buff->b_string = (char *)malloc(sizeof(char) * size);
+  int displacement = 0;
+  while (*string != ' ' && *string != '\n' && *string != '\t' &&
+         *string != '\0' && (patt.width > displacement || width_flag == TRUE)) {
+    buff->b_string[displacement] = *string;
+    string++;
+    displacement++;
+    if (size < displacement + 1) {
+      size *= 1.5;
+      buff->b_string = (char *)realloc(buff->b_string, (sizeof(char) * size));
+    }
+  }
+  buff->b_string[displacement] = '\0';
+  return displacement;
+}
+
 int read_char(const char *string, char *c) {
   int displacement = 1;
   *c = *string;
+  return displacement;
+}
+
+int read_percent(const char *string) {
+  int displacement = 0;
+  if (*string == '%') displacement = 1;
   return displacement;
 }
 
@@ -432,6 +455,9 @@ int read_string(const char *string, struct Pattern patt, struct Buffer *buff) {
       displacement = read_char(string, &c);
       buff->b_char = c;
       break;
+    case S_SPEC:
+      displacement = read_str(string, patt, buff);
+      break;
     case D_SPEC:
       switch (patt.size_var) {
         case L_SIZE:
@@ -541,6 +567,9 @@ int read_string(const char *string, struct Pattern patt, struct Buffer *buff) {
           break;
       }
       break;
+    case PERC_SPEC:
+      displacement = read_percent(string);
+      break;
     default:
       break;
   }
@@ -571,6 +600,17 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
         case C_SPEC:
           char *c = (char *)va_arg(scanf_arg, char *);
           *c = buff.b_char;
+          buff.counter++;
+          break;
+        case S_SPEC:
+          char **str = (char **)va_arg(scanf_arg, char **);
+          *str = buff.b_string;
+          int i = 0;
+          while (buff.b_string[i] != '\0') {
+            *str[i] = buff.b_string[i];
+            i++;
+          }
+          *str[i] = '\0';
           buff.counter++;
           break;
         case D_SPEC:
@@ -668,36 +708,39 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
     }
   }
   va_end(scanf_arg);
+  if (buff.b_string != NULL) {
+    free(buff.b_string);
+  }
   return buff.counter;
 }
 
-// int main(void) {
-//   // int age = 0, wei = 0;
-//   // double lf = 9.9;
-//   // long double llf = 9.9;
-//   // float f = 9.9;
-//   // float ff = 9.9;
-//   // char c = 't';
-//   int a, b, c = 3, d, i;
-//   int count =
-//       s21_sscanf("Age: -2 Age:011 Age:\n11 Age:abcdef Age:11",
-//                  "Age:%d Age: %o Age:\t%*u Age:%x Age:%X", &a, &b, &d, &i);
-//   printf("%d %d %d %d %d count %d\n", a, b, c, d, i, count);
-//   // struct Pattern patt;
-//   // // print_pattern(patt);
-//   // char str[20];
+int main(void) {
+  // int age = 0, wei = 0;
+  // double lf = 9.9;
+  // long double llf = 9.9;
+  // float f = 9.9;
+  // float ff = 9.9;
+  // char c = 't';
+  int a, b, c = 3, d, i;
+  int count =
+      s21_sscanf("Age: -2 Age:011 Age:\n11 Age:abcdef Age:11",
+                 "Age:%d Age: %o Age:\t%*u Age:%x Age:%X", &a, &b, &d, &i);
+  printf("%d %d %d %d %d count %d\n", a, b, c, d, i, count);
+  // struct Pattern patt;
+  // // print_pattern(patt);
+  char str1[20];
+  char str2[20] = "78";
+  //  get_pattern(str, &patt);
+  //  print_pattern(patt);
+  //  while (*str != '\0') {
+  //    printf("%c", *str++);
+  //  }
+  unsigned int x1 = 5, x2 = 6;
 
-//   // get_pattern(str, &patt);
-//   // print_pattern(patt);
-//   // while (*str != '\0') {
-//   //   printf("%c", *str++);
-//   // }
-//   unsigned int x1 = 5, x2 = 6;
-
-//   a = sscanf("10 123", "%*d %x", &x1);
-//   b = s21_sscanf("10 123", "%*d %x", &x2);
-//   // a = sscanf("", "%x", &x1);
-//   // b = s21_sscanf("", "%x", &x2);
-//   printf("%d %d %d %d\n", x1, x2, a, b);
-//   return 0;
-// }
+  a = sscanf("123", "%s", str1);
+  b = s21_sscanf("123", "%s", str2);
+  //  a = sscanf("", "%x", &x1);
+  //  b = s21_sscanf("", "%x", &x2);
+  printf("%d %d %s %s\n", x1, x2, str1, str2);
+  return 0;
+}
