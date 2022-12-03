@@ -363,10 +363,7 @@ void my_itoa_u(long long unsigned int value, _string* result, int base) {
             *ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz" [35 + (tmp_value - value * base)];
             ++result->pos;
         } while ( value );
-    if (tmp_value < 0) {
-        *ptr++ = '-';
-        ++result->pos;
-    }
+    
          ptr--;
         while(ptr1 < ptr) {
             tmp_char = *ptr;
