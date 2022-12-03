@@ -13,7 +13,7 @@ int s21_skip(const char *string, const char *format, int *str_diss,
     format += skip;
     *form_diss += skip;
   }
-  while (*string == *format) {
+  while (*string == *format && *string != '%') {
     string++;
     format++;
     (*form_diss)++;
@@ -262,7 +262,8 @@ int read_str(const char *string, struct Pattern patt, struct Buffer *buff) {
   _bool width_flag = FALSE;
   if (patt.width == 0) width_flag = TRUE;
   int size = patt.width != 0 ? patt.width : 100;
-  buff->b_string = (char *)malloc(sizeof(char) * size);
+  buff->b_string = (char *)realloc(buff->b_string, (sizeof(char) * size));
+  // buff->b_string = (char *)malloc(sizeof(char) * size);
   int displacement = 0;
   while (*string != ' ' && *string != '\n' && *string != '\t' &&
          *string != '\0' && (patt.width > displacement || width_flag == TRUE)) {
@@ -405,7 +406,6 @@ int read_u_int16(const char *string, struct Pattern patt, struct Buffer *buff,
   }
   *i = 0;
   while (flag == TRUE && (patt.width > width || width_flag == TRUE)) {
-    buff->good_read = TRUE;
     displacement++;
     c = *string++;
     width++;
@@ -441,7 +441,10 @@ int read_u_int16(const char *string, struct Pattern patt, struct Buffer *buff,
           flag = FALSE;
         }
     }
-    if (flag == TRUE) *i = k + *i * 16;
+    if (flag == TRUE) {
+      *i = k + *i * 16;
+      buff->good_read = TRUE;
+    }
   }
   if (flag_z == FALSE) *i *= -1;
   return displacement;
@@ -478,7 +481,6 @@ int read_string(const char *string, struct Pattern patt, struct Buffer *buff) {
         default:
           break;
       }
-      break;
       break;
     case E_SPEC:
     case E_BIG_SPEC:
@@ -567,6 +569,13 @@ int read_string(const char *string, struct Pattern patt, struct Buffer *buff) {
           break;
       }
       break;
+    case P_SPEC:
+      unsigned long int i;
+      displacement = read_u_int16(string, patt, buff, &i);
+      buff->b_u_long_int = i;
+      break;
+    case N_SPEC:
+      break;
     case PERC_SPEC:
       displacement = read_percent(string);
       break;
@@ -584,6 +593,7 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
   struct Buffer buff;
   buff.good_read = FALSE;
   buff.counter = 0;
+  buff.b_string = (char *)malloc(sizeof(char) * 100);
   int form_diss_global = 0;
   int str_diss_global = 0;
   s21_skip(string, format, &str_diss_global, &form_diss_global);
@@ -603,14 +613,14 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
           buff.counter++;
           break;
         case S_SPEC:
-          char **str = (char **)va_arg(scanf_arg, char **);
-          *str = buff.b_string;
-          int i = 0;
-          while (buff.b_string[i] != '\0') {
-            *str[i] = buff.b_string[i];
-            i++;
+          char *str = (char *)va_arg(scanf_arg, char *);
+          //*str = buff.b_string;
+          int iter = 0;
+          while (buff.b_string[iter] != '\0') {
+            (str)[iter] = buff.b_string[iter];
+            iter++;
           }
-          *str[i] = '\0';
+          (str)[iter] = '\0';
           buff.counter++;
           break;
         case D_SPEC:
@@ -702,6 +712,19 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
               break;
           }
           break;
+        case P_SPEC:
+          unsigned long int *i =
+              (unsigned long int *)va_arg(scanf_arg, unsigned long int *);
+          if (buff.good_read == TRUE) {
+            *i = buff.b_u_long_int;
+            buff.good_read = FALSE;
+            buff.counter++;
+          }
+          break;
+        case N_SPEC:
+          break;
+        case PERC_SPEC:
+          break;
         default:
           break;
       }
@@ -714,33 +737,54 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
   return buff.counter;
 }
 
-int main(void) {
-  // int age = 0, wei = 0;
-  // double lf = 9.9;
-  // long double llf = 9.9;
-  // float f = 9.9;
-  // float ff = 9.9;
-  // char c = 't';
-  int a, b, c = 3, d, i;
-  int count =
-      s21_sscanf("Age: -2 Age:011 Age:\n11 Age:abcdef Age:11",
-                 "Age:%d Age: %o Age:\t%*u Age:%x Age:%X", &a, &b, &d, &i);
-  printf("%d %d %d %d %d count %d\n", a, b, c, d, i, count);
-  // struct Pattern patt;
-  // // print_pattern(patt);
-  char str1[20];
-  char str2[20] = "78";
-  //  get_pattern(str, &patt);
-  //  print_pattern(patt);
-  //  while (*str != '\0') {
-  //    printf("%c", *str++);
-  //  }
-  unsigned int x1 = 5, x2 = 6;
+// int main(void) {
+//   int r1 = 0, r2 = 0;
+//   void *p1 = 0, *p2 = 0;
 
-  a = sscanf("123", "%s", str1);
-  b = s21_sscanf("123", "%s", str2);
-  //  a = sscanf("", "%x", &x1);
-  //  b = s21_sscanf("", "%x", &x2);
-  printf("%d %d %s %s\n", x1, x2, str1, str2);
-  return 0;
-}
+//   // r1 = sscanf("0x123", "%4p", &p1);
+//   // r2 = s21_sscanf("0x123", "%4p", &p2);
+//   // printf("%p %p\n", p1, p2);
+//   // printf("%d %d\n", r1, r2);
+
+//   // r1 = sscanf("0xz123", "%4p", &p1);
+//   // r2 = s21_sscanf("0xz123", "%4p", &p2);
+//   // printf("%p %p\n", p1, p2);
+//   // printf("%d %d\n", r1, r2);
+
+//   // r1 = sscanf("0zx123", "%4p", &p1);
+//   // r2 = s21_sscanf("0zx123", "%4p", &p2);
+//   // printf("%p %p\n", p1, p2);
+//   // printf("%d %d\n", r1, r2);
+
+//   // r1 = sscanf("z0x123", "%4p", &p1);
+//   // r2 = s21_sscanf("z0x123", "%4p", &p2);
+//   // printf("%p %p\n", p1, p2);
+//   // printf("%d %d\n", r1, r2);
+
+//   // r1 = sscanf("-z0x123", "%4p", &p1);
+//   // r2 = s21_sscanf("-z0x123", "%4p", &p2);
+//   // printf("%p %p\n", p1, p2);
+//   // printf("%d %d\n", r1, r2);
+
+//   r1 = sscanf("-0x123", "%4p", &p1);
+//   r2 = s21_sscanf("-0x123", "%4p", &p2);
+//   printf("%p %p\n", p1, p2);
+//   printf("%d %d\n", r1, r2);
+
+//   // r1 = sscanf("123", "%4p", &p1);
+//   // r2 = s21_sscanf("123", "%4p", &p2);
+//   // printf("%p %p\n", p1, p2);
+//   // printf("%d %d\n", r1, r2);
+
+//   // r1 = sscanf("0x12345", "%p", &p1);
+//   // r2 = s21_sscanf("0x12345", "%p", &p2);
+//   // printf("%p %p\n", p1, p2);
+//   // printf("%d %d\n", r1, r2);
+
+//   // r1 = sscanf("123.456", "%p", &p1);
+//   // r2 = s21_sscanf("123.456", "%p", &p2);
+//   // printf("%p %p\n", p1, p2);
+//   // printf("%d %d\n", r1, r2);
+
+//   return 0;
+// }

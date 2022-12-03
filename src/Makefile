@@ -42,5 +42,5 @@ git:
 	git add *.h
 	#git add *.sh
 	git add Makefile
-	git commit -m "l L h d o x u"
+	git commit -m "l L h d o x u s p"
 	git push origin developShelacor
