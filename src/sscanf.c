@@ -7,20 +7,20 @@ _bool is_digit(char c) { return c <= '9' && c >= '0' ? TRUE : FALSE; }
 
 int s21_skip(const char *string, const char *format, int *str_diss,
              int *form_diss) {
-  int skip = 0;
-  if (*string != *format) {
-    skip = skip_space(format);
-    format += skip;
-    *form_diss += skip;
-  }
+  // int skip = 0;
+  // if (*string != *format) {
+  //   skip = skip_space(format);
+  //   format += skip;
+  //   *form_diss += skip;
+  // }
   while (*string == *format && *string != '%') {
     string++;
     format++;
     (*form_diss)++;
     (*str_diss)++;
   }
-  *str_diss += skip_space(string);
-  *form_diss += skip_space(format);
+  //*str_diss += skip_space(string);
+  // *form_diss += skip_space(format);
   return 0;
 }
 
@@ -123,7 +123,8 @@ void print_pattern(struct Pattern patt) {
 }
 
 int get_pattern(const char *format, struct Pattern *patt) {
-  int displacement = 0;
+  int displacement = skip_space(string);
+  string += displacement;
   if (*format == '%') {
     format++;
     displacement++;
@@ -251,20 +252,38 @@ int s21_sscanf(const char *string, const char *format, ...) {
   return scanf_argc;
 }
 
-int read_double(const char *string, struct Pattern patt, long double *d) {
-  int displacement = 6;
-  displacement += patt.width;  //
+int read_double(const char *string, struct Pattern patt, struct Buffer *buff,
+                long double *d) {
+  int displacement = skip_space(string);
+  string += displacement;
+  _bool flag = TRUE, width_flag = FALSE, flag_z = TRUE;
+  int width = 0;
+  if (patt.width == 0) width_flag = TRUE;
+
+  if (*string == '-') flag_z = FALSE;
+  if (*string == '-' || *string == '+') {
+    width++;
+    displacement++;
+    string++;
+  }
+
+  while ((patt.width > width || width_flag == TRUE) && flag) {
+  }
   sscanf(string, "%Lf", d);
+  buff->b_long_double = *d;
+  if (flag_z == FALSE) *d *= -1;
   return displacement;
 }
 
 int read_str(const char *string, struct Pattern patt, struct Buffer *buff) {
+  int displacement = skip_space(string);
+  string += displacement;
   _bool width_flag = FALSE;
   if (patt.width == 0) width_flag = TRUE;
   int size = patt.width != 0 ? patt.width : 100;
   buff->b_string = (char *)realloc(buff->b_string, (sizeof(char) * size));
   // buff->b_string = (char *)malloc(sizeof(char) * size);
-  int displacement = 0;
+  // int displacement = 0;
   while (*string != ' ' && *string != '\n' && *string != '\t' &&
          *string != '\0' && (patt.width > displacement || width_flag == TRUE)) {
     buff->b_string[displacement] = *string;
@@ -293,7 +312,8 @@ int read_percent(const char *string) {
 
 int read_int(const char *string, struct Pattern patt, struct Buffer *buff,
              long int *i) {
-  int displacement = 0;
+  int displacement = skip_space(string);
+  string += displacement;
   int width = 0;
   char c = *string;
   _bool flag = TRUE, width_flag = FALSE;
@@ -320,7 +340,8 @@ int read_int(const char *string, struct Pattern patt, struct Buffer *buff,
 }
 
 int read_i_int(const char *string, struct Pattern patt, struct Buffer *buff) {
-  int displacement = 0;
+  int displacement = skip_space(string);
+  string += displacement;
   unsigned long int answ = 0;
   char c = *string;
   int width = 0;
@@ -385,7 +406,8 @@ int read_i_int(const char *string, struct Pattern patt, struct Buffer *buff) {
 
 int read_u_int8(const char *string, struct Pattern patt, struct Buffer *buff,
                 unsigned long int *i) {
-  int displacement = 0;
+  int displacement = skip_space(string);
+  string += displacement;
   char c = *string;
   int width = 0;
   _bool flag = TRUE, width_flag = FALSE;
@@ -413,7 +435,8 @@ int read_u_int8(const char *string, struct Pattern patt, struct Buffer *buff,
 
 int read_u_int10(const char *string, struct Pattern patt, struct Buffer *buff,
                  unsigned long int *i) {
-  int displacement = 0;
+  int displacement = skip_space(string);
+  string += displacement;
   char c = *string;
   int width = 0;
   _bool flag = TRUE, width_flag = FALSE;
@@ -441,7 +464,8 @@ int read_u_int10(const char *string, struct Pattern patt, struct Buffer *buff,
 
 int read_u_int16(const char *string, struct Pattern patt, struct Buffer *buff,
                  unsigned long int *i) {
-  int displacement = 0;
+  int displacement = skip_space(string);
+  string += displacement;
   int k = 0;
   char c = *string;
   int width = 0;
@@ -568,17 +592,17 @@ int read_string(const char *string, struct Pattern patt, struct Buffer *buff) {
       switch (patt.size_var) {
         case L_SIZE:
           long double d;  // double
-          displacement = read_double(string, patt, &d);
+          displacement = read_double(string, patt, buff, &d);
           buff->b_double = d;
           break;
         case L_BIG_SIZE:
           long double ld;
-          displacement = read_double(string, patt, &ld);
+          displacement = read_double(string, patt, buff, &ld);
           buff->b_long_double = ld;
           break;
         default:
           long double f;  // float
-          displacement = read_double(string, patt, &f);
+          displacement = read_double(string, patt, buff, &f);
           buff->b_float = f;
           break;
       }
@@ -838,15 +862,18 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
 }
 
 // int main(void) {
-//   int r1 = 0, r2 = 0;
-//   int i1 = -1, i2 = -1, i3 = 0, i4 = 0;  // i5 = 0, i6 = 0;
+//   // int r1 = 0, r2 = 0;
+//   // int i1 = -1, i2 = -1, i3 = 0, i4 = 0;  // i5 = 0, i6 = 0;
 //   // short int i7, i8, i9, i10, i11, i12;
 //   //  long int i20, i21, i22, i23, i24, i25;
-
-//   r1 = sscanf("0x9 -0xa2      0xBa1", "%*i%5i%i", &i1, &i3);
-//   r2 = s21_sscanf("0x9 -0xa2      0xBa1", "%*i%5i%i", &i2, &i4);
-//   printf("%d %d\n", i1, i2);
-//   printf("%d %d\n", i3, i4);
+//   char s1[10], s2[10];
+//   char c1, c2;
+//   int d1, d2, r1, r2;
+//   r1 = sscanf("123 amogus q", "%d%9s%c", &d1, s1, &c1);
+//   r2 = s21_sscanf("123 amogus q", "%d%9s%c", &d2, s2, &c2);
+//   printf("%d %d\n", d1, d2);
+//   printf("%s %s\n", s1, s2);
+//   printf("%c %c\n", c1, c2);
 //   printf("%d %d\n", r1, r2);
 //   return 0;
 // }
