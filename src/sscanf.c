@@ -4,20 +4,32 @@
 
 _bool is_digit(char c) { return c <= '9' && c >= '0' ? TRUE : FALSE; }
 
-int s21_skip(const char *string, const char *format) {
-  int count = 0;
+int s21_skip(const char *string, const char *format, int *str_diss,
+             int *form_diss) {
+  // int count = 0;
+  int skip = 0;
+  if (*string != *format) {
+    skip = skip_space(format);
+    format += skip;
+    *form_diss += skip;
+  }
   while (*string == *format) {
     string++;
     format++;
-    count++;
+    // count++;
+    (*form_diss)++;
+    (*str_diss)++;
   }
-  return count;
+  *str_diss += skip_space(string);
+  *form_diss += skip_space(format);
+  return 0;
 }
 
 int skip_space(const char *str) {
   int count = 0;
-  while (*str == ' ') {
+  while (*str == ' ' || *str == '\n' || *str == '\t') {
     count++;
+    str++;
   }
   return count;
 }
@@ -461,21 +473,17 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
   int str_diss = 0;
   struct Pattern patt;
   struct Buffer buff;
-
-  int skip = s21_skip(string, format);
-  int form_diss_global = skip;  // + skip_space(format + skip);
-  int str_diss_global = skip;   // + skip_space(string + skip);
+  int form_diss_global = 0;
+  int str_diss_global = 0;
+  s21_skip(string, format, &str_diss_global, &form_diss_global);
 
   while ((form_diss = get_pattern(format + form_diss_global, &patt)) > 0 &&
          (str_diss = read_string(string + str_diss_global, patt, &buff)) > 0) {
     counter++;
-    // form_diss_global +=
-    //     form_diss + skip_space(format + form_diss_global + form_diss);
-    // str_diss_global +=
-    //     str_diss + skip_space(string + str_diss_global + str_diss);
-    skip = s21_skip(string + str_diss_global, format + form_diss_global);
-    // form_diss_global += skip + skip_space(format + form_diss_global);
-    // str_diss_global += skip + skip_space(string + str_diss_global);
+    form_diss_global += form_diss;
+    str_diss_global += str_diss;
+    s21_skip(string + str_diss_global, format + form_diss_global,
+             &str_diss_global, &form_diss_global);
     if (patt.recording == TRUE) {
       switch (patt.spec) {
         case C_SPEC:
@@ -564,8 +572,8 @@ int main(void) {
   // float ff = 9.9;
   // char c = 't';
   int a, b, c, d, i;
-  s21_sscanf("Age:-2 Age:11 Age:11 Age:11 Age:11",
-             "Age:%d Age:%o Age:%u Age:%x Age:%X", &a, &b, &c, &d, &i);
+  s21_sscanf("Age: -2 Age:11 Age:\n11 Age:11 Age:11",
+             "Age:%d Age: %o Age:\t%u Age:%x Age:%X", &a, &b, &c, &d, &i);
   printf("%d %d %d %d %d \n", a, b, c, d, i);
   // struct Pattern patt;
   // // print_pattern(patt);

@@ -49,7 +49,8 @@ struct Buffer {
 
 int s21_sscanf(const char *string, const char *format, ...);
 int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg);
-int s21_skip(const char *string, const char *format);
+int s21_skip(const char *string, const char *format, int *str_diss,
+             int *form_diss);
 int skip_space(const char *str);
 
 int read_double(const char *string, struct Pattern patt, long double *d);

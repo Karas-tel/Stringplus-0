@@ -5,7 +5,7 @@ int main() {
   //  float num_f = 1.2;
   int num_i = 1;
   // char c = 'q';
-  sscanf("Age: 123456", "Age: %d", &num_i);
+  sscanf(" Age:   123456", "  Age: %d", &num_i);
   // long long int int_ll = 5;
   printf("%d\n", num_i);
 
@@ -14,7 +14,7 @@ int main() {
 
   // точность не работает для sscanf
 
-  sscanf("Age: 777 666", "Age: %*d %d", &num_i);  // подавляет запись
+  sscanf("Age: 777  d 666", "Age: %*d d %d", &num_i);  // подавляет запись
   printf("%d\n", num_i);
 
   long int num_li = 1;
