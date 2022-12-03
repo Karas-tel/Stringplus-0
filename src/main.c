@@ -328,88 +328,88 @@ Suite* additional_func_suite(void) {
     return s;
 }
 
-//------------TEST STRING.H-----------------------------
-START_TEST(test_memchr) {
-    const char* buff = "ASDFGHJK1234!@#$";
-    char* buff2 = s21_memchr(buff, 'G', 5);
-    char* buff3 = memchr(buff, 'G', 5);
-    ck_assert_str_eq(buff2, buff3);
-    buff2 = s21_memchr(buff, 'G', 4);
-    ck_assert_ptr_null(buff2);
-    buff2 = s21_memchr("", 'G', 5);
-    ck_assert_ptr_null(buff2);
-    buff2 = s21_memchr(buff, '\0', 25);
-    buff3 = memchr(buff, '\0', 25);
-    ck_assert_str_eq(buff2, buff3);
-} END_TEST
-
-START_TEST(test_memcmp) {
-    const char* buff = "ASDFGHJK1234!@#$";
-    const char* buff1 = "ASDFGHJK1234!@#$";
-    ck_assert_int_eq(memcmp(buff, buff1, 0), s21_memcmp(buff, buff1, 0));
-    ck_assert_int_eq(memcmp(buff, buff1, 10), s21_memcmp(buff, buff1, 10));
-    buff = " ";
-    buff1 = "ASDFGHJK1234!@#$";
-    ck_assert_int_eq(memcmp(buff, buff1, 0), s21_memcmp(buff, buff1, 0));
-    ck_assert_int_eq(memcmp(buff, buff1, 10), s21_memcmp(buff, buff1, 10));
-    buff = "";
-    buff1 = "";
-    ck_assert_int_eq(memcmp(buff, buff1, 0), s21_memcmp(buff, buff1, 0));
-    ck_assert_int_eq(memcmp(buff, buff1, 10), s21_memcmp(buff, buff1, 10));
-
-    buff = "ASDFGHJK1234!@#$/0asd";
-    buff1 = "A/0SDFGHJK1234!@#$";
-    ck_assert_int_eq(memcmp(buff, buff1, 100), s21_memcmp(buff, buff1, 100));
-
-} END_TEST
-
-START_TEST(test_memcpy) {
-    const char* src = "ASDFGHJK1234!@#$";
-    char* dest1[16];
-    char* dest2[16];
-   // ck_assert_str_eq(memcpy(dest, src, 100), s21_memcpy(dest, src, 100));
-    char* res1 = memcpy(dest1, src, 5);
-    char* res2 = s21_memcpy(dest2, src, 5);
-    res1 = memcpy(dest1, src, 100);
-    res2 = s21_memcpy(dest2, src, 100);
-    ck_assert_str_eq(res1, res2);
-
-} END_TEST
-
-START_TEST(test_memmove) {
-    const char* src = "ASDFGHJK1234!@#$";
-    char* dest1[16];
-    char* dest2[16];
-
-    char* res1 = memmove(dest1, src, 5);
-    char* res2 = s21_memmove(dest2, src, 5);
-    ck_assert_str_eq(res1, res2);
-    res1 = memmove(dest1, src, 100);
-    res2 = s21_memmove(dest2, src, 100);
-    ck_assert_str_eq(res1, res2);
-} END_TEST
-
-
-START_TEST(test_memset) {
-    char str[16] = "ASDFGHJK1234";
-    ck_assert_str_eq(memset(str, 'a', 0), s21_memset(str, 'a', 0));
-    ck_assert_str_eq(memset(str, '\0', 10), s21_memset(str, '\0', 10));
-} END_TEST
-
-
-Suite* main_func_suite(void) {
-    Suite* s;
-    TCase* tc_core;
-    s = suite_create("main_func");
-    tc_core = tcase_create("core");
-    tcase_add_test(tc_core, test_memchr);
-    tcase_add_test(tc_core, test_memcmp);
-    tcase_add_test(tc_core, test_memcpy);
-    tcase_add_test(tc_core, test_memmove);
-    tcase_add_test(tc_core, test_memset);
-    suite_add_tcase(s, tc_core);
-    return s;
-}
+////------------TEST STRING.H-----------------------------
+//START_TEST(test_memchr) {
+//    const char* buff = "ASDFGHJK1234!@#$";
+//    char* buff2 = s21_memchr(buff, 'G', 5);
+//    char* buff3 = memchr(buff, 'G', 5);
+//    ck_assert_str_eq(buff2, buff3);
+//    buff2 = s21_memchr(buff, 'G', 4);
+//    ck_assert_ptr_null(buff2);
+//    buff2 = s21_memchr("", 'G', 5);
+//    ck_assert_ptr_null(buff2);
+//    buff2 = s21_memchr(buff, '\0', 25);
+//    buff3 = memchr(buff, '\0', 25);
+//    ck_assert_str_eq(buff2, buff3);
+//} END_TEST
+//
+//START_TEST(test_memcmp) {
+//    const char* buff = "ASDFGHJK1234!@#$";
+//    const char* buff1 = "ASDFGHJK1234!@#$";
+//    ck_assert_int_eq(memcmp(buff, buff1, 0), s21_memcmp(buff, buff1, 0));
+//    ck_assert_int_eq(memcmp(buff, buff1, 10), s21_memcmp(buff, buff1, 10));
+//    buff = " ";
+//    buff1 = "ASDFGHJK1234!@#$";
+//    ck_assert_int_eq(memcmp(buff, buff1, 0), s21_memcmp(buff, buff1, 0));
+//    ck_assert_int_eq(memcmp(buff, buff1, 10), s21_memcmp(buff, buff1, 10));
+//    buff = "";
+//    buff1 = "";
+//    ck_assert_int_eq(memcmp(buff, buff1, 0), s21_memcmp(buff, buff1, 0));
+//    ck_assert_int_eq(memcmp(buff, buff1, 10), s21_memcmp(buff, buff1, 10));
+//
+//    buff = "ASDFGHJK1234!@#$/0asd";
+//    buff1 = "A/0SDFGHJK1234!@#$";
+//    ck_assert_int_eq(memcmp(buff, buff1, 100), s21_memcmp(buff, buff1, 100));
+//
+//} END_TEST
+//
+//START_TEST(test_memcpy) {
+//    const char* src = "ASDFGHJK1234!@#$";
+//    char* dest1[16];
+//    char* dest2[16];
+//   // ck_assert_str_eq(memcpy(dest, src, 100), s21_memcpy(dest, src, 100));
+//    char* res1 = memcpy(dest1, src, 5);
+//    char* res2 = s21_memcpy(dest2, src, 5);
+//    res1 = memcpy(dest1, src, 100);
+//    res2 = s21_memcpy(dest2, src, 100);
+//    ck_assert_str_eq(res1, res2);
+//
+//} END_TEST
+//
+//START_TEST(test_memmove) {
+//    const char* src = "ASDFGHJK1234!@#$";
+//    char* dest1[16];
+//    char* dest2[16];
+//
+//    char* res1 = memmove(dest1, src, 5);
+//    char* res2 = s21_memmove(dest2, src, 5);
+//    ck_assert_str_eq(res1, res2);
+//    res1 = memmove(dest1, src, 100);
+//    res2 = s21_memmove(dest2, src, 100);
+//    ck_assert_str_eq(res1, res2);
+//} END_TEST
+//
+//
+//START_TEST(test_memset) {
+//    char str[16] = "ASDFGHJK1234";
+//    ck_assert_str_eq(memset(str, 'a', 0), s21_memset(str, 'a', 0));
+//    ck_assert_str_eq(memset(str, '\0', 10), s21_memset(str, '\0', 10));
+//} END_TEST
+//
+//
+//Suite* main_func_suite(void) {
+//    Suite* s;
+//    TCase* tc_core;
+//    s = suite_create("main_func");
+//    tc_core = tcase_create("core");
+//    tcase_add_test(tc_core, test_memchr);
+//    tcase_add_test(tc_core, test_memcmp);
+//    tcase_add_test(tc_core, test_memcpy);
+//    tcase_add_test(tc_core, test_memmove);
+//    tcase_add_test(tc_core, test_memset);
+//    suite_add_tcase(s, tc_core);
+//    return s;
+//}
 
 
 int main() {
@@ -507,7 +507,7 @@ int main() {
     Suite* tests[] = {
         sprintf_suite(),
         additional_func_suite(),
-        main_func_suite(),
+      //  main_func_suite(),
         NULL
     };
     int no_failed = 0;
