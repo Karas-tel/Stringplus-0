@@ -265,7 +265,7 @@ int read_double(const char *string, struct Pattern patt, struct Buffer *buff,
     string++;
   }
   long double answ = 0.0;
-  while (*string != '.' && (patt.width > width || width_flag == TRUE) && flag &&
+  while (*string != '.' && *string != ' ' && (patt.width > width || width_flag == TRUE) && flag &&
          is_digit(*string) == TRUE) {
     answ += *string - '0' + answ * 10;
     string++;
@@ -542,9 +542,13 @@ int read_u_int16(const char *string, struct Pattern patt, struct Buffer *buff,
 
 int read_string(const char *string, struct Pattern patt, struct Buffer *buff) {
   int displacement = 0;
+  char c;
+  long int li;
+  long double ld;
+  unsigned long int uli;
   switch (patt.spec) {
     case C_SPEC:
-      char c;
+      //char c;
       displacement = read_char(string, &c);
       buff->b_char = c;
       break;
@@ -567,19 +571,19 @@ int read_string(const char *string, struct Pattern patt, struct Buffer *buff) {
     case D_SPEC:
       switch (patt.size_var) {
         case L_SIZE:
-          long int li;
+          //long int li;
           displacement = read_int(string, patt, buff, &li);
           buff->b_long_int = li;
           break;
         case H_SIZE:
-          long int si;
-          displacement = read_int(string, patt, buff, &si);
-          buff->b_short_int = si;
+          //long int si;
+          displacement = read_int(string, patt, buff, &li);
+          buff->b_short_int = li;
           break;
         case NO_SIZE:
-          long int i;
-          displacement = read_int(string, patt, buff, &i);
-          buff->b_int = i;
+          //long int i;
+          displacement = read_int(string, patt, buff, &li);
+          buff->b_int = li;
           break;
         default:
           break;
@@ -592,38 +596,38 @@ int read_string(const char *string, struct Pattern patt, struct Buffer *buff) {
     case G_BIG_SPEC:
       switch (patt.size_var) {
         case L_SIZE:
-          long double d;  // double
-          displacement = read_double(string, patt, buff, &d);
-          buff->b_double = d;
+          //long double d;  // double
+          displacement = read_double(string, patt, buff, &ld);
+          buff->b_double = ld;
           break;
         case L_BIG_SIZE:
-          long double ld;
+          //long double ld;
           displacement = read_double(string, patt, buff, &ld);
           buff->b_long_double = ld;
           break;
         default:
-          long double f;  // float
-          displacement = read_double(string, patt, buff, &f);
-          buff->b_float = f;
+          //long double f;  // float
+          displacement = read_double(string, patt, buff, &ld);
+          buff->b_float = ld;
           break;
       }
       break;
     case O_SPEC:
       switch (patt.size_var) {
         case L_SIZE:
-          unsigned long int li;
-          displacement = read_u_int8(string, patt, buff, &li);
-          buff->b_u_long_int = li;
+          //unsigned long int li;
+          displacement = read_u_int8(string, patt, buff, &uli);
+          buff->b_u_long_int = uli;
           break;
         case H_SIZE:
-          unsigned long int si;
-          displacement = read_u_int8(string, patt, buff, &si);
-          buff->b_u_short_int = si;
+          //unsigned long int si;
+          displacement = read_u_int8(string, patt, buff, &uli);
+          buff->b_u_short_int = uli;
           break;
         case NO_SIZE:
-          unsigned long int i;
-          displacement = read_u_int8(string, patt, buff, &i);
-          buff->b_u_int = i;
+          //unsigned long int i;
+          displacement = read_u_int8(string, patt, buff, &uli);
+          buff->b_u_int = uli;
           break;
         default:
           break;
@@ -632,19 +636,19 @@ int read_string(const char *string, struct Pattern patt, struct Buffer *buff) {
     case U_SPEC:
       switch (patt.size_var) {
         case L_SIZE:
-          unsigned long int li;
-          displacement = read_u_int10(string, patt, buff, &li);
-          buff->b_u_long_int = li;
+          //unsigned long int li;
+          displacement = read_u_int10(string, patt, buff, &uli);
+          buff->b_u_long_int = uli;
           break;
         case H_SIZE:
-          unsigned long int si;
-          displacement = read_u_int10(string, patt, buff, &si);
-          buff->b_u_short_int = si;
+          //unsigned long int si;
+          displacement = read_u_int10(string, patt, buff, &uli);
+          buff->b_u_short_int = uli;
           break;
         case NO_SIZE:
-          unsigned long int i;
-          displacement = read_u_int10(string, patt, buff, &i);
-          buff->b_u_int = i;
+          //unsigned long int i;
+          displacement = read_u_int10(string, patt, buff, &uli);
+          buff->b_u_int = uli;
           break;
         default:
           break;
@@ -654,28 +658,28 @@ int read_string(const char *string, struct Pattern patt, struct Buffer *buff) {
     case X_BIG_SPEC:
       switch (patt.size_var) {
         case L_SIZE:
-          unsigned long int li;
-          displacement = read_u_int16(string, patt, buff, &li);
-          buff->b_u_long_int = li;
+          //unsigned long int li;
+          displacement = read_u_int16(string, patt, buff, &uli);
+          buff->b_u_long_int = uli;
           break;
         case H_SIZE:
-          unsigned long int si;
-          displacement = read_u_int16(string, patt, buff, &si);
-          buff->b_u_short_int = si;
+          //unsigned long int si;
+          displacement = read_u_int16(string, patt, buff, &uli);
+          buff->b_u_short_int = uli;
           break;
         case NO_SIZE:
-          unsigned long int i;
-          displacement = read_u_int16(string, patt, buff, &i);
-          buff->b_u_int = i;
+          //unsigned long int i;
+          displacement = read_u_int16(string, patt, buff, &uli);
+          buff->b_u_int = uli;
           break;
         default:
           break;
       }
       break;
     case P_SPEC:
-      unsigned long int i;
-      displacement = read_u_int16(string, patt, buff, &i);
-      buff->b_u_long_int = i;
+      //unsigned long int i;
+      displacement = read_u_int16(string, patt, buff, &uli);
+      buff->b_u_long_int = uli;
       break;
     case N_SPEC:
 
@@ -701,6 +705,17 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
   int form_diss_global = 0;
   int str_diss_global = 0;
   s21_skip(string, format, &str_diss_global, &form_diss_global);
+  char *c;
+  long int *li;
+  short int *si;
+  int *i;
+  unsigned long int *uli;
+  unsigned short int *usi;
+  unsigned int *ui;
+
+  double *d;
+  long double *ld;
+  float *f;
 
   while (
       (form_diss = get_pattern(format + form_diss_global, &patt)) > 0 &&
@@ -714,40 +729,40 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
       // counter++;
       switch (patt.spec) {
         case C_SPEC:
-          char *c = (char *)va_arg(scanf_arg, char *);
+          c = (char *)va_arg(scanf_arg, char *);
           *c = buff.b_char;
           buff.counter++;
           break;
         case S_SPEC:
-          char *str = (char *)va_arg(scanf_arg, char *);
+          c = (char *)va_arg(scanf_arg, char *);
           //*str = buff.b_string;
           int iter = 0;
           while (buff.b_string[iter] != '\0') {
-            (str)[iter] = buff.b_string[iter];
+            c[iter] = buff.b_string[iter];
             iter++;
           }
-          (str)[iter] = '\0';
+          c[iter] = '\0';
           buff.counter++;
           break;
         case D_SPEC:
         case I_SPEC:
           switch (patt.size_var) {
             case L_SIZE:
-              long int *li = (long int *)va_arg(scanf_arg, long int *);
+              li = (long int *)va_arg(scanf_arg, long int *);
               if (buff.good_read == TRUE) {
                 *li = buff.b_long_int;
                 buff.counter++;
               }
               break;
             case H_SIZE:
-              short int *si = (short int *)va_arg(scanf_arg, short int *);
+              si = (short int *)va_arg(scanf_arg, short int *);
               if (buff.good_read == TRUE) {
                 *si = buff.b_short_int;
                 buff.counter++;
               }
               break;
             case NO_SIZE:
-              int *i = (int *)va_arg(scanf_arg, int *);
+              i = (int *)va_arg(scanf_arg, int *);
               if (buff.good_read == TRUE) {
                 *i = buff.b_int;
                 buff.counter++;
@@ -764,17 +779,17 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
         case G_BIG_SPEC:
           switch (patt.size_var) {
             case L_SIZE:
-              double *d = (double *)va_arg(scanf_arg, double *);
+              d = (double *)va_arg(scanf_arg, double *);
               *d = buff.b_double;
               buff.counter++;
               break;
             case L_BIG_SIZE:
-              long double *ld = (long double *)va_arg(scanf_arg, long double *);
+              ld = (long double *)va_arg(scanf_arg, long double *);
               *ld = buff.b_long_double;
               buff.counter++;
               break;
             case NO_SIZE:
-              float *f = (float *)va_arg(scanf_arg, float *);
+              f = (float *)va_arg(scanf_arg, float *);
               *f = buff.b_float;
               buff.counter++;
               break;
@@ -788,28 +803,28 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
         case X_BIG_SPEC:
           switch (patt.size_var) {
             case L_SIZE:
-              unsigned long int *li =
+              uli =
                   (unsigned long int *)va_arg(scanf_arg, unsigned long int *);
               if (buff.good_read == TRUE) {
-                *li = buff.b_u_long_int;
+                *uli = buff.b_u_long_int;
                 buff.good_read = FALSE;
                 buff.counter++;
               }
               break;
             case H_SIZE:
-              unsigned short int *si =
+              usi =
                   (unsigned short int *)va_arg(scanf_arg, unsigned short int *);
               if (buff.good_read == TRUE) {
-                *si = buff.b_u_short_int;
+                *usi = buff.b_u_short_int;
                 buff.good_read = FALSE;
                 buff.counter++;
               }
               break;
             case NO_SIZE:
-              unsigned int *i =
+              ui =
                   (unsigned int *)va_arg(scanf_arg, unsigned int *);
               if (buff.good_read == TRUE) {
-                *i = buff.b_u_int;
+                *ui = buff.b_u_int;
                 buff.good_read = FALSE;
                 buff.counter++;
               }
@@ -819,10 +834,10 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
           }
           break;
         case P_SPEC:
-          unsigned long int *i =
+          uli =
               (unsigned long int *)va_arg(scanf_arg, unsigned long int *);
           if (buff.good_read == TRUE) {
-            *i = buff.b_u_long_int;
+            *uli = buff.b_u_long_int;
             buff.good_read = FALSE;
             buff.counter++;
           }
@@ -830,19 +845,19 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
         case N_SPEC:
           switch (patt.size_var) {
             case L_SIZE:
-              unsigned long int *li =
+              uli =
                   (unsigned long int *)va_arg(scanf_arg, unsigned long int *);
-              *li = str_diss_global;
+              *uli = str_diss_global;
               break;
             case H_SIZE:
-              unsigned short int *si =
+              usi =
                   (unsigned short int *)va_arg(scanf_arg, unsigned short int *);
-              *si = str_diss_global;
+              *usi = str_diss_global;
               break;
             case NO_SIZE:
-              unsigned int *i =
+              ui =
                   (unsigned int *)va_arg(scanf_arg, unsigned int *);
-              *i = str_diss_global;
+              *ui = str_diss_global;
               break;
             default:
               break;
@@ -862,19 +877,28 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
   return buff.counter;
 }
 
-// int main(void) {
-//   // int r1 = 0, r2 = 0;
-//   // int i1 = -1, i2 = -1, i3 = 0, i4 = 0;  // i5 = 0, i6 = 0;
-//   // short int i7, i8, i9, i10, i11, i12;
-//   //  long int i20, i21, i22, i23, i24, i25;
-//   char s1[10], s2[10];
-//   char c1, c2;
-//   int d1, d2, r1, r2;
-//   r1 = sscanf("123 amogus q", "%d%9s%c", &d1, s1, &c1);
-//   r2 = s21_sscanf("123 amogus q", "%d%9s%c", &d2, s2, &c2);
-//   printf("%d %d\n", d1, d2);
-//   printf("%s %s\n", s1, s2);
-//   printf("%c %c\n", c1, c2);
-//   printf("%d %d\n", r1, r2);
-//   return 0;
-// }
+int main(void) {
+  float e1 = 0, e2 = 0;
+  int r1 = 0, r2 = 0;
+
+  r1 = sscanf("123e34", "%e", &e1);
+  r2 = s21_sscanf("123e34", "%e", &e2);
+  printf("%f %f\n", e1, e2);
+  printf("%d %d\n",r1, r2);
+
+  r1 = sscanf("12e34", "%e", &e1);
+  r2 = s21_sscanf("12e34", "%e", &e2);
+  printf("%f %f\n", e1, e2);
+  printf("%d %d\n",r1, r2);
+
+  r1 = sscanf("123.345e-34", "%9e", &e1);
+  r2 = s21_sscanf("123.345e-34", "%9e", &e2);
+  printf("%f %f\n", e1, e2);
+  printf("%d %d\n",r1, r2);
+
+  r1 = sscanf("123.345e34", "%8e", &e1);
+  r2 = s21_sscanf("123.345e34", "%8e", &e2);
+  printf("%f %f\n", e1, e2);
+  printf("%d %d\n",r1, r2);
+  return 0;
+}

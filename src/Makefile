@@ -1,4 +1,4 @@
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -g -O0
 
 all:
 	#hello there
@@ -23,6 +23,11 @@ clean:
 
 test:
 	gcc $(CFLAGS) -o check_ss.out check_ss.c sscanf.c -lcheck -lm -lpthread -lsubunit
+	make clean
+	./check_ss.out
+
+test_mac:
+	gcc $(CFLAGS) -o check_ss.out check_ss.c sscanf.c -lcheck -lm -lpthread -I /usr/local/include -L/usr/local/lib
 	make clean
 	./check_ss.out
 
