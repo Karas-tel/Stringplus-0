@@ -290,14 +290,28 @@ for (int i = 0; i < data->pos; ++i) {
 }
 
 void sprint_s(flags* flags, int *counter, char **str, va_list param) {
-    char* data = va_arg(param, char*);
+    char* data = NULL;
+    wchar_t* data_t = NULL;
+    if (flags->l)
+        data_t = va_arg(param, wchar_t*);
+    else
+        data = va_arg(param, char*);
     _string tmp;
     _string_init(&tmp);
     int i = 0;
     //printf("acc = %d\n", flags->acc);
     if (flags->dot && flags->acc < 0) flags->acc = 0;
-    while (*data != '\0' && (flags->acc < 0 || tmp.pos < flags->acc)) {
-        tmp.buffer[tmp.pos++] = *(data++);
+    
+    
+    if (!flags->l) {
+        while (*data != '\0' && (flags->acc < 0 || tmp.pos < flags->acc)) {
+            tmp.buffer[tmp.pos++] = *(data++);
+        }
+    } else {
+        while (*data_t != L'\0' && (flags->acc < 0 || tmp.pos < flags->acc)) {
+            
+            tmp.buffer[tmp.pos++] = (char)*(data_t++);
+        }
     }
     if (!flags->align) {
         shuffle_str(&tmp);

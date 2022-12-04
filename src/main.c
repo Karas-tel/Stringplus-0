@@ -429,12 +429,28 @@ int main() {
 //     printf("strcpy ORIGINAL = %s\n", memcpy_res);
 //     printf("\n");
 
-    char buff[200];
-    char buff2[200];
-    s21_sprintf(buff, "%+010.f % .f %+0.f %- 4.5f %-+5.4f ", -10000.0, -1.0, 5.54454545, 5.9999999999, 5.54454545);
-    sprintf(buff2, "%+010.f % .f %+0.f %- 4.5f %-+5.4f ", -10000.0, -1.0, 5.54454545, 5.9999999999, 5.54454545);
-    printf("|%s|\n", buff);
-    printf("|%s|\n", buff2);
+//    char buff[200];
+//    char buff2[200];
+//    s21_sprintf(buff, "%+010.f % .f %+0.f %- 4.5f %-+5.4f ", -10000.0, -1.0, 5.54454545, 5.9999999999, 5.54454545);
+//    sprintf(buff2, "%+010.f % .f %+0.f %- 4.5f %-+5.4f ", -10000.0, -1.0, 5.54454545, 5.9999999999, 5.54454545);
+//    printf("|%s|\n", buff);
+//    printf("|%s|\n", buff2);
+//    wchar_t* w_temp = L"прLLO";
+//    //unsigned long w = L'森';
+//    char* temp = calloc(1024, sizeof(char));
+//    int s = wctomb(temp, *(w_temp + 1));
+//    
+//    printf("%d=|%s|\n",s, temp);
+//        char str1[512];
+//        char str2[512];
+//    
+//        char *format = "This is a simple wide char %-10ls";
+//     
+//        int a = s21_sprintf(str1, format, w_temp);
+//       int b = sprintf(str2, format, w_temp);
+//    printf("%d = |%s|\n", a, str1);
+//    printf("%d = |%s|\n", b, str2);
+//    
     //printf("%d\n", INT_MAX);
     //double d = 5.0;
 //    int d = 10;
