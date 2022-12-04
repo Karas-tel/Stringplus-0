@@ -21,6 +21,12 @@ int s21_skip(const char *string, const char *format, int *str_diss,
   }
   *str_diss += skip_space(string);
   *form_diss += skip_space(format);
+  // if ((skip = skip_space(format)) != 0) {
+  //   *str_diss += skip_space(string);
+  //   *form_diss += skip;
+  // } else {
+    
+  // }
   return 0;
 }
 
@@ -251,35 +257,63 @@ int s21_sscanf(const char *string, const char *format, ...) {
   return scanf_argc;
 }
 
-int read_double(const char *string, struct Pattern patt, struct Buffer *buff,
+int read_double(const char *string, struct Pattern patt,
                 long double *d) {
   int displacement = 0;
-  _bool flag = TRUE, width_flag = FALSE, flag_z = TRUE;
-  int width = 0;
-  if (patt.width == 0) width_flag = TRUE;
-
-  if (*string == '-') flag_z = FALSE;
-  if (*string == '-' || *string == '+') {
-    width++;
+  char *buf;
+  char *buf_w = (char *)malloc(sizeof(char) * 100);
+  
+  long double ld = 0.;
+  if (patt.width != 0) {
+    buf_w = (char *)realloc(buf_w, (sizeof(char) * patt.width));
+    int i = 0;
+    while(i < patt.width && string[i] != '\0') {
+      buf_w[i] = string[i];
+      i++;
+    }
+    char *buf_temp = buf_w;
+    ld = strtold(buf_w, &buf_w);
+    while(*string != *buf_w) {
+      displacement++;
+      string++;
+    }
+    buf_w = buf_temp;
+  } else {
+  ld = strtold(string, &buf);
+  while(*string != *buf) {
     displacement++;
     string++;
   }
-  long double answ = 0.0;
-  while (*string != '.' && *string != ' ' && (patt.width > width || width_flag == TRUE) && flag &&
-         is_digit(*string) == TRUE) {
-    answ += *string - '0' + answ * 10;
-    string++;
   }
-  double m = 10.0;
-  while ((patt.width > width || width_flag == TRUE) && flag &&
-         is_digit(*string) == TRUE) {
-    answ += (*string - '0') / m;
-    string++;
-  }
-  // sscanf(string, "%Lf", d);
-  *d = answ;
-  if (flag_z == FALSE) *d *= -1;
-  buff->b_long_double = *d;
+  *d = ld;
+  free(buf_w);
+  // printf("\n%d %d\n", patt.width, buff->b_int);
+  // _bool flag = TRUE, width_flag = FALSE, flag_z = TRUE;
+  // int width = 0;
+  // if (patt.width == 0) width_flag = TRUE;
+
+  // if (*string == '-') flag_z = FALSE;
+  // if (*string == '-' || *string == '+') {
+  //   width++;
+  //   displacement++;
+  //   string++;
+  // }
+  // long double answ = 0.0;
+  // while (*string != '.' && *string != ' ' && (patt.width > width || width_flag == TRUE) && flag &&
+  //        is_digit(*string) == TRUE) {
+  //   answ += *string - '0' + answ * 10;
+  //   string++;
+  // }
+  // double m = 10.0;
+  // while ((patt.width > width || width_flag == TRUE) && flag &&
+  //        is_digit(*string) == TRUE) {
+  //   answ += (*string - '0') / m;
+  //   string++;
+  // }
+  // // sscanf(string, "%Lf", d);
+  // *d = answ;
+  // if (flag_z == FALSE) *d *= -1;
+  // buff->b_long_double = *d;
   return displacement;
 }
 
@@ -597,17 +631,17 @@ int read_string(const char *string, struct Pattern patt, struct Buffer *buff) {
       switch (patt.size_var) {
         case L_SIZE:
           //long double d;  // double
-          displacement = read_double(string, patt, buff, &ld);
+          displacement = read_double(string, patt, &ld);
           buff->b_double = ld;
           break;
         case L_BIG_SIZE:
           //long double ld;
-          displacement = read_double(string, patt, buff, &ld);
+          displacement = read_double(string, patt, &ld);
           buff->b_long_double = ld;
           break;
         default:
           //long double f;  // float
-          displacement = read_double(string, patt, buff, &ld);
+          displacement = read_double(string, patt, &ld);
           buff->b_float = ld;
           break;
       }
@@ -877,28 +911,28 @@ int va_s21_sscanf(const char *string, const char *format, va_list scanf_arg) {
   return buff.counter;
 }
 
-int main(void) {
-  float e1 = 0, e2 = 0;
-  int r1 = 0, r2 = 0;
+// int main(void) {
+//   float e1 = 0, e2 = 0;
+//   int r1 = 0, r2 = 0;
 
-  r1 = sscanf("123e34", "%e", &e1);
-  r2 = s21_sscanf("123e34", "%e", &e2);
-  printf("%f %f\n", e1, e2);
-  printf("%d %d\n",r1, r2);
+//   // r1 = sscanf("123e34", "%e", &e1);
+//   // r2 = s21_sscanf("123e34", "%e", &e2);
+//   // printf("%f %f\n", e1, e2);
+//   // printf("%d %d\n",r1, r2);
 
-  r1 = sscanf("12e34", "%e", &e1);
-  r2 = s21_sscanf("12e34", "%e", &e2);
-  printf("%f %f\n", e1, e2);
-  printf("%d %d\n",r1, r2);
+//   // r1 = sscanf("12e34", "%e", &e1);
+//   // r2 = s21_sscanf("12e34", "%e", &e2);
+//   // printf("%f %f\n", e1, e2);
+//   // printf("%d %d\n",r1, r2);
 
-  r1 = sscanf("123.345e-34", "%9e", &e1);
-  r2 = s21_sscanf("123.345e-34", "%9e", &e2);
-  printf("%f %f\n", e1, e2);
-  printf("%d %d\n",r1, r2);
+//   r1 = sscanf("123.345e-34", "%9e", &e1);
+//   r2 = s21_sscanf("123.345e-34", "%9e", &e2);
+//   printf("%f %f\n", e1, e2);
+//   printf("%d %d\n",r1, r2);
 
-  r1 = sscanf("123.345e34", "%8e", &e1);
-  r2 = s21_sscanf("123.345e34", "%8e", &e2);
-  printf("%f %f\n", e1, e2);
-  printf("%d %d\n",r1, r2);
-  return 0;
-}
+//   r1 = sscanf("123.345e34", "%8e", &e1);
+//   r2 = s21_sscanf("123.345e34", "%8e", &e2);
+//   printf("%f %f\n", e1, e2);
+//   printf("%d %d\n",r1, r2);
+//   return 0;
+// }
