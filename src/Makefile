@@ -1,12 +1,13 @@
 #CFLAGS=-Wall -Werror -Wextra
 CFLAGS = -Wall -Werror -Wextra -std=c11 --coverage
+LDFLAGS=-L/usr/local/include
 
 all: clean s21_string.a test gcov_report
 
 ubuntu: clean s21_string.a test_ubuntu gcov_report
 
 test: main.c s21_string.a
-	gcc -o test $(CFLAGS) main.c s21_string.a -lcheck -lm -lpthread
+	gcc -o test $(CFLAGS) main.c s21_string.a -lcheck -lpthread -lm  -I /usr/local/include -L/usr/local/lib
 	
 test_ubuntu: main.c s21_string.a
 	gcc -o test $(CFLAGS) main.c s21_string.a -lcheck -lm -lpthread -lsubunit
