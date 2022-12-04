@@ -255,8 +255,9 @@ void* to_lower(const char *str) {
 
 void *insert(const char *src, const char *str, size_t start_index) {
     char* str_cp = (char*) calloc(s21_strlen(str) + s21_strlen(src) + 1, sizeof(char));
-    size_t i = 0;
+    
     if (start_index <= s21_strlen(src) && str_cp != NULL) {
+        size_t i = 0;
         while (i < start_index) {
             str_cp[i] = src[i];
             ++i;
@@ -280,10 +281,10 @@ void *insert(const char *src, const char *str, size_t start_index) {
 void *trim(const char *src, const char *trim_chars) {
     
     char* str_cp = NULL;
-    size_t left_bound = 0, right_bound = 0, flag = 1;
+   
     
     if (src != NULL) {
-        left_bound = 0;
+        size_t left_bound = 0, right_bound = 0, flag = 1;
         right_bound = s21_strlen(src) - 1;
         while(flag && left_bound != right_bound) {
             flag = 0;
@@ -307,14 +308,14 @@ void *trim(const char *src, const char *trim_chars) {
         str_cp = calloc(right_bound - left_bound + 2, sizeof(char));
         if (str_cp) {
             int i_temp = 0;
-            if (str_cp) {
+            
                 if (left_bound != right_bound) {
                     for (size_t i = left_bound; i <= right_bound; ++i)
                         str_cp[i_temp++] = src[i];
                 }
                 str_cp[i_temp]= '\0';
             }
-        }
+        
     }
     return str_cp;
 }

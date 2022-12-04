@@ -17,7 +17,7 @@
 
 int s21_sprintf(char* str, const char* format, ...) {
     int counter = 0;
-    int flag = 1;
+    int flag;
     flags flags;
     flag_init(&flags);
     va_list param;
@@ -197,7 +197,7 @@ void sprint_e (flags* flags, int* counter, char** str, _string* data, long doubl
         if (exp < 0) {
             exp *= -1;
             data->buffer[data->pos++] = '-';
-        } else if (exp >= 0) {
+        } else {
             data->buffer[data->pos++] = '+';
         }
         if (exp < 10) data->buffer[data->pos++] = '0';
@@ -337,11 +337,11 @@ void sprint_s(flags* flags, int *counter, char **str, va_list param) {
 
 void shuffle_str (_string* data) {
     char* ptr1 = data->buffer, *ptr = &(data->buffer[data->pos - 1]);
-    char tmp_char;
+   
         
         
     while(ptr1 < ptr) {
-        tmp_char = *ptr;
+        char tmp_char = *ptr;
         *ptr--= *ptr1;
         *ptr1++ = tmp_char;
     }
@@ -349,7 +349,7 @@ void shuffle_str (_string* data) {
 }
 
 void my_itoa(long int value, _string* result, int base) {
-        char* ptr = result->buffer, *ptr1 = result->buffer, tmp_char;
+        char* ptr = result->buffer, *ptr1 = result->buffer;
         long int tmp_value;
         do {
             tmp_value = value;
@@ -363,15 +363,16 @@ void my_itoa(long int value, _string* result, int base) {
     }
          ptr--;
         while(ptr1 < ptr) {
-            tmp_char = *ptr;
+            char tmp_char = *ptr;
             *ptr--= *ptr1;
             *ptr1++ = tmp_char;
         }
     }
 void my_itoa_u(long long unsigned int value, _string* result, int base) {
-        char* ptr = result->buffer, *ptr1 = result->buffer, tmp_char;
-    long long unsigned int tmp_value;
+        char* ptr = result->buffer, *ptr1 = result->buffer;
+   
         do {
+            long long unsigned int tmp_value;
             tmp_value = value;
             value /= base;
             *ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz" [35 + (tmp_value - value * base)];
@@ -380,7 +381,7 @@ void my_itoa_u(long long unsigned int value, _string* result, int base) {
     
          ptr--;
         while(ptr1 < ptr) {
-            tmp_char = *ptr;
+            char tmp_char = *ptr;
             *ptr--= *ptr1;
             *ptr1++ = tmp_char;
         }
@@ -417,7 +418,7 @@ void apply_acc_d (flags* flags, _string* data, int zero_flag) {
 //        data->buffer[data->pos++] = '+';
     else if (zero_flag < 0)
         data->buffer[data->pos++] = '-';
-    else if (flags->space && zero_flag >= 0)
+    else if (flags->space)
         data->buffer[data->pos++] = ' ';
     shuffle_str(data);
     if (flags->acc == 0 && zero_flag == 0 && flags->sign)
@@ -472,12 +473,12 @@ void round_acc(_vector* vec) {
 void my_dtos(long double val, _string* data, flags* flags, char specifier) {
     if (flags->acc < 0 && flags->dot) flags->acc = 0;
     if (flags->acc < 0 && !flags->dot) flags->acc = 6;
-    double float_part = 0, int_part = 0;
+    double int_part = 0;
     _vector vec;
     _vector_init(&vec);
     if (!check_inf_nan(val, data, flags, specifier)) {
         if (flags->acc > 0) {
-            float_part = modf(val, &int_part);
+            double float_part = modf(val, &int_part);
             if (float_part < 0) float_part *= -1;
             vec.buffer[vec.pos++] = 0;
             for (int i = 0; i < flags->acc; ++i) {
