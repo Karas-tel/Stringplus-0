@@ -27,10 +27,9 @@ gcov_report: test
 	
 	
 check:
-	cp ../../materials/linters/.clang-format ../../src/.clang-format
+	cp ../materials/linters/.clang-format ../src/.clang-format
 	clang-format -i *.c
 	clang-format -i *.h
-	cppcheck --enable=all --suppress=missingIncludeSystem *.c
 	
 
 clean:
