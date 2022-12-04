@@ -7,20 +7,20 @@ _bool is_digit(char c) { return c <= '9' && c >= '0' ? TRUE : FALSE; }
 
 int s21_skip(const char *string, const char *format, int *str_diss,
              int *form_diss) {
-  // int skip = 0;
-  // if (*string != *format) {
-  //   skip = skip_space(format);
-  //   format += skip;
-  //   *form_diss += skip;
-  // }
+  int skip = 0;
+  if (*string != *format) {
+    skip = skip_space(format);
+    format += skip;
+    *form_diss += skip;
+  }
   while (*string == *format && *string != '%') {
     string++;
     format++;
     (*form_diss)++;
     (*str_diss)++;
   }
-  //*str_diss += skip_space(string);
-  // *form_diss += skip_space(format);
+  *str_diss += skip_space(string);
+  *form_diss += skip_space(format);
   return 0;
 }
 
@@ -123,8 +123,7 @@ void print_pattern(struct Pattern patt) {
 }
 
 int get_pattern(const char *format, struct Pattern *patt) {
-  int displacement = skip_space(string);
-  string += displacement;
+  int displacement = 0;
   if (*format == '%') {
     format++;
     displacement++;
@@ -254,8 +253,7 @@ int s21_sscanf(const char *string, const char *format, ...) {
 
 int read_double(const char *string, struct Pattern patt, struct Buffer *buff,
                 long double *d) {
-  int displacement = skip_space(string);
-  string += displacement;
+  int displacement = 0;
   _bool flag = TRUE, width_flag = FALSE, flag_z = TRUE;
   int width = 0;
   if (patt.width == 0) width_flag = TRUE;
@@ -266,24 +264,32 @@ int read_double(const char *string, struct Pattern patt, struct Buffer *buff,
     displacement++;
     string++;
   }
-
-  while ((patt.width > width || width_flag == TRUE) && flag) {
+  long double answ = 0.0;
+  while (*string != '.' && (patt.width > width || width_flag == TRUE) && flag &&
+         is_digit(*string) == TRUE) {
+    answ += *string - '0' + answ * 10;
+    string++;
   }
-  sscanf(string, "%Lf", d);
-  buff->b_long_double = *d;
+  double m = 10.0;
+  while ((patt.width > width || width_flag == TRUE) && flag &&
+         is_digit(*string) == TRUE) {
+    answ += (*string - '0') / m;
+    string++;
+  }
+  // sscanf(string, "%Lf", d);
+  *d = answ;
   if (flag_z == FALSE) *d *= -1;
+  buff->b_long_double = *d;
   return displacement;
 }
 
 int read_str(const char *string, struct Pattern patt, struct Buffer *buff) {
-  int displacement = skip_space(string);
-  string += displacement;
   _bool width_flag = FALSE;
   if (patt.width == 0) width_flag = TRUE;
   int size = patt.width != 0 ? patt.width : 100;
   buff->b_string = (char *)realloc(buff->b_string, (sizeof(char) * size));
   // buff->b_string = (char *)malloc(sizeof(char) * size);
-  // int displacement = 0;
+  int displacement = 0;
   while (*string != ' ' && *string != '\n' && *string != '\t' &&
          *string != '\0' && (patt.width > displacement || width_flag == TRUE)) {
     buff->b_string[displacement] = *string;
@@ -312,8 +318,7 @@ int read_percent(const char *string) {
 
 int read_int(const char *string, struct Pattern patt, struct Buffer *buff,
              long int *i) {
-  int displacement = skip_space(string);
-  string += displacement;
+  int displacement = 0;
   int width = 0;
   char c = *string;
   _bool flag = TRUE, width_flag = FALSE;
@@ -340,8 +345,7 @@ int read_int(const char *string, struct Pattern patt, struct Buffer *buff,
 }
 
 int read_i_int(const char *string, struct Pattern patt, struct Buffer *buff) {
-  int displacement = skip_space(string);
-  string += displacement;
+  int displacement = 0;
   unsigned long int answ = 0;
   char c = *string;
   int width = 0;
@@ -406,8 +410,7 @@ int read_i_int(const char *string, struct Pattern patt, struct Buffer *buff) {
 
 int read_u_int8(const char *string, struct Pattern patt, struct Buffer *buff,
                 unsigned long int *i) {
-  int displacement = skip_space(string);
-  string += displacement;
+  int displacement = 0;
   char c = *string;
   int width = 0;
   _bool flag = TRUE, width_flag = FALSE;
@@ -435,8 +438,7 @@ int read_u_int8(const char *string, struct Pattern patt, struct Buffer *buff,
 
 int read_u_int10(const char *string, struct Pattern patt, struct Buffer *buff,
                  unsigned long int *i) {
-  int displacement = skip_space(string);
-  string += displacement;
+  int displacement = 0;
   char c = *string;
   int width = 0;
   _bool flag = TRUE, width_flag = FALSE;
@@ -464,8 +466,7 @@ int read_u_int10(const char *string, struct Pattern patt, struct Buffer *buff,
 
 int read_u_int16(const char *string, struct Pattern patt, struct Buffer *buff,
                  unsigned long int *i) {
-  int displacement = skip_space(string);
-  string += displacement;
+  int displacement = 0;
   int k = 0;
   char c = *string;
   int width = 0;
