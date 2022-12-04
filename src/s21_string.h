@@ -12,6 +12,7 @@
 #include <stdio.h>
 
 #include "s21_sprintf.h"
+#include "s21_sscanf.h"
 #if defined(__APPLE__) || defined(__MACH__)  // strerror
 #define MAX_ERRLIST 107
 #define MIN_ERRLIST -1

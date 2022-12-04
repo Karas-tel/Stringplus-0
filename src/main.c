@@ -8,8 +8,6 @@
 #include <check.h>
 #include <stdio.h>
 
-#include "s21_sprintf.h"
-#include "s21_sscanf.h"
 #include "s21_string.h"
 #include "test_data.h"
 
