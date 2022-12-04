@@ -228,6 +228,9 @@ START_TEST(test_printf_s_c) {
         int c = s21_sprintf(data, "|%.03s|\n", "hello");
         int d = sprintf(data1, "|%.03s|\n", "hello");
         ck_assert_int_eq(c, d);
+    sprintf(data, "%ls", L"assasdsad");
+    s21_sprintf(data1, "%ls", L"assasdsad");
+    ck_assert_str_eq(data, data1);
 } END_TEST
 
 Suite* sprintf_suite(void) {
@@ -439,18 +442,18 @@ int main() {
 //    //unsigned long w = L'森';
 //    char* temp = calloc(1024, sizeof(char));
 //    int s = wctomb(temp, *(w_temp + 1));
-//    
+//
 //    printf("%d=|%s|\n",s, temp);
 //        char str1[512];
 //        char str2[512];
-//    
+//
 //        char *format = "This is a simple wide char %-10ls";
-//     
+//
 //        int a = s21_sprintf(str1, format, w_temp);
 //       int b = sprintf(str2, format, w_temp);
 //    printf("%d = |%s|\n", a, str1);
 //    printf("%d = |%s|\n", b, str2);
-//    
+//
     //printf("%d\n", INT_MAX);
     //double d = 5.0;
 //    int d = 10;
